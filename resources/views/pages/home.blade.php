@@ -1,0 +1,379 @@
+<x-layouts.app>
+    @php
+        $currentLocale = app()->getLocale();
+        $currentSegment = session('segment', 'privat');
+    @endphp
+
+    <!-- Hero Section -->
+    <section class="relative bg-cover bg-center h-[600px]" style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&h=600&fit=crop');">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+            <div class="max-w-2xl text-white">
+                <h1 class="text-5xl font-bold mb-6">
+                    @if($currentLocale === 'fr')
+                        Actien, Obligationen, Immobilien: Wie lege ich mein Geld am besten an?
+                    @elseif($currentLocale === 'de')
+                        Aktien, Obligationen, Immobilien: Wie lege ich mein Geld am besten an?
+                    @elseif($currentLocale === 'en')
+                        Stocks, Bonds, Real Estate: How do I best invest my money?
+                    @else
+                        Acciones, Bonos, Inmuebles: ¿Cómo invierto mejor mi dinero?
+                    @endif
+                </h1>
+                <p class="text-xl mb-8">
+                    @if($currentLocale === 'fr')
+                        Découvrez nos solutions d'investissement personnalisées
+                    @elseif($currentLocale === 'de')
+                        Entdecken Sie unsere massgeschneiderten Anlagelösungen
+                    @elseif($currentLocale === 'en')
+                        Discover our tailored investment solutions
+                    @else
+                        Descubra nuestras soluciones de inversión personalizadas
+                    @endif
+                </p>
+                <a href="{{ route('services.invest', ['locale' => $currentLocale]) }}" class="inline-block bg-pink-600 hover:bg-pink-700 text-white font-semibold px-8 py-4 rounded-md transition-colors">
+                    @if($currentLocale === 'fr')
+                        En savoir plus
+                    @elseif($currentLocale === 'de')
+                        Mehr Infos
+                    @elseif($currentLocale === 'en')
+                        Learn more
+                    @else
+                        Más información
+                    @endif
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1556742400-b5d5b7b1b06a?w=600&h=400&fit=crop');"></div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
+                            @if($currentLocale === 'fr')
+                                E-Banking et Mobile Banking
+                            @elseif($currentLocale === 'de')
+                                E-Banking und Mobile Banking
+                            @elseif($currentLocale === 'en')
+                                E-Banking and Mobile Banking
+                            @else
+                                E-Banking y Mobile Banking
+                            @endif
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            @if($currentLocale === 'fr')
+                                Gérez vos comptes en ligne 24/7 avec notre plateforme sécurisée
+                            @elseif($currentLocale === 'de')
+                                Verwalten Sie Ihre Konten online 24/7 mit unserer sicheren Plattform
+                            @elseif($currentLocale === 'en')
+                                Manage your accounts online 24/7 with our secure platform
+                            @else
+                                Gestione sus cuentas en línea 24/7 con nuestra plataforma segura
+                            @endif
+                        </p>
+                        <a href="{{ route('ebanking.login', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                            @if($currentLocale === 'fr')
+                                En savoir plus
+                            @elseif($currentLocale === 'de')
+                                Mehr Infos
+                            @elseif($currentLocale === 'en')
+                                Learn more
+                            @else
+                                Más información
+                            @endif
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop');"></div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
+                            @if($currentLocale === 'fr')
+                                Financer un logement
+                            @elseif($currentLocale === 'de')
+                                Wohneigentum finanzieren
+                            @elseif($currentLocale === 'en')
+                                Finance Housing
+                            @else
+                                Financiar Vivienda
+                            @endif
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            @if($currentLocale === 'fr')
+                                Hypothèques avantageuses pour réaliser votre projet immobilier
+                            @elseif($currentLocale === 'de')
+                                Vorteilhafte Hypotheken für Ihr Immobilienprojekt
+                            @elseif($currentLocale === 'en')
+                                Advantageous mortgages for your real estate project
+                            @else
+                                Hipotecas ventajosas para su proyecto inmobiliario
+                            @endif
+                        </p>
+                        <a href="{{ route('services.housing', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                            @if($currentLocale === 'fr')
+                                En savoir plus
+                            @elseif($currentLocale === 'de')
+                                Mehr Infos
+                            @elseif($currentLocale === 'en')
+                                Learn more
+                            @else
+                                Más información
+                            @endif
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop');"></div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
+                            @if($currentLocale === 'fr')
+                                Placements et Prévoyance
+                            @elseif($currentLocale === 'de')
+                                Anlagen und Vorsorge
+                            @elseif($currentLocale === 'en')
+                                Investments and Pension
+                            @else
+                                Inversiones y Previsión
+                            @endif
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            @if($currentLocale === 'fr')
+                                Planifiez votre avenir financier avec nos experts
+                            @elseif($currentLocale === 'de')
+                                Planen Sie Ihre finanzielle Zukunft mit unseren Experten
+                            @elseif($currentLocale === 'en')
+                                Plan your financial future with our experts
+                            @else
+                                Planifique su futuro financiero con nuestros expertos
+                            @endif
+                        </p>
+                        <a href="{{ route('services.planning', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                            @if($currentLocale === 'fr')
+                                En savoir plus
+                            @elseif($currentLocale === 'de')
+                                Mehr Infos
+                            @elseif($currentLocale === 'en')
+                                Learn more
+                            @else
+                                Más información
+                            @endif
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aktuelles (News/Blog) Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">
+                    @if($currentLocale === 'fr')
+                        Actualités
+                    @elseif($currentLocale === 'de')
+                        Aktuelles
+                    @elseif($currentLocale === 'en')
+                        News
+                    @else
+                        Noticias
+                    @endif
+                </h2>
+                <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="text-pink-600 hover:text-pink-700 font-medium">
+                    @if($currentLocale === 'fr')
+                        Voir tout
+                    @elseif($currentLocale === 'de')
+                        Mehr sehen
+                    @elseif($currentLocale === 'en')
+                        View all
+                    @else
+                        Ver todo
+                    @endif
+                    →
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- News Card 1 -->
+                <div class="flex space-x-4">
+                    <div class="flex-shrink-0 w-48 h-32 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop');"></div>
+                    <div class="flex-1">
+                        <span class="text-sm text-gray-500">
+                            @if($currentLocale === 'fr')
+                                Actualités
+                            @elseif($currentLocale === 'de')
+                                Aktuelles
+                            @elseif($currentLocale === 'en')
+                                News
+                            @else
+                                Noticias
+                            @endif
+                        </span>
+                        <h3 class="text-lg font-semibold mb-2 hover:text-pink-600 cursor-pointer">
+                            @if($currentLocale === 'fr')
+                                Nouveau E-Banking et Mobile Banking: Lancement fin octobre 2025
+                            @elseif($currentLocale === 'de')
+                                Neues E-Banking und Mobile Banking: Einführung ab Ende Oktober 2025
+                            @elseif($currentLocale === 'en')
+                                New E-Banking and Mobile Banking: Launch end of October 2025
+                            @else
+                                Nuevo E-Banking y Mobile Banking: Lanzamiento finales de octubre 2025
+                            @endif
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- News Card 2 -->
+                <div class="flex space-x-4">
+                    <div class="flex-shrink-0 w-48 h-32 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop');"></div>
+                    <div class="flex-1">
+                        <span class="text-sm text-gray-500">
+                            @if($currentLocale === 'fr')
+                                Actualités
+                            @elseif($currentLocale === 'de')
+                                Aktuelles
+                            @elseif($currentLocale === 'en')
+                                News
+                            @else
+                                Noticias
+                            @endif
+                        </span>
+                        <h3 class="text-lg font-semibold mb-2 hover:text-pink-600 cursor-pointer">
+                            @if($currentLocale === 'fr')
+                                Les assurances techniques sont en cours
+                            @elseif($currentLocale === 'de')
+                                Teknische Versicherungen sind im Gange
+                            @elseif($currentLocale === 'en')
+                                Technical insurances are underway
+                            @else
+                                Los seguros técnicos están en curso
+                            @endif
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                    <span class="text-sm">
+                        @if($currentLocale === 'fr')
+                            Actionnaires & Actionnariat
+                        @elseif($currentLocale === 'de')
+                            Aktionärinnen & Aktionäre
+                        @elseif($currentLocale === 'en')
+                            Shareholders
+                        @else
+                            Accionistas
+                        @endif
+                    </span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                    <span class="text-sm">Kaspar&acrevis</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                    <span class="text-sm">
+                        @if($currentLocale === 'fr')
+                            Taux hypothécaires
+                        @elseif($currentLocale === 'de')
+                            Zinssätze Hypotheken
+                        @elseif($currentLocale === 'en')
+                            Mortgage Rates
+                        @else
+                            Tasas Hipotecarias
+                        @endif
+                    </span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                    <span class="text-sm">Blog</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meine Bank in der Nähe -->
+    <section class="py-16 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop');">
+        <div class="bg-black/40 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-md bg-white rounded-lg p-8 shadow-xl">
+                    <h2 class="text-2xl font-bold mb-6">
+                        @if($currentLocale === 'fr')
+                            Ma banque à proximité
+                        @elseif($currentLocale === 'de')
+                            Meine Bank in der Nähe
+                        @elseif($currentLocale === 'en')
+                            My bank nearby
+                        @else
+                            Mi banco cerca
+                        @endif
+                    </h2>
+                    <select class="w-full px-4 py-3 border border-gray-300 rounded-md mb-4 focus:ring-pink-500 focus:border-pink-500">
+                        <option>St.Gallen</option>
+                        <option>Zürich</option>
+                        <option>Bern</option>
+                        <option>Basel</option>
+                    </select>
+                    <div class="mt-4">
+                        <div class="flex items-start space-x-3">
+                            <svg class="w-5 h-5 text-pink-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <div>
+                                <p class="font-semibold">acrevis Bank</p>
+                                <p class="text-sm text-gray-600">9004 St.Gallen</p>
+                                <p class="text-sm text-gray-600">Marktplatz 1</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('agencies', ['locale' => $currentLocale]) }}" class="mt-6 block w-full text-center bg-pink-600 hover:bg-pink-700 text-white font-semibold px-6 py-3 rounded-md transition-colors">
+                        @if($currentLocale === 'fr')
+                            Voir toutes les agences
+                        @elseif($currentLocale === 'de')
+                            Alle Standorte anzeigen
+                        @elseif($currentLocale === 'en')
+                            View all branches
+                        @else
+                            Ver todas las agencias
+                        @endif
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</x-layouts.app>
