@@ -64,6 +64,10 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         return view('pages.credit-request');
     })->name('credit.request');
 
+    Route::get('/credit-confirmation', function () {
+        return view('pages.credit-confirmation');
+    })->name('credit.confirmation');
+
     // E-Banking
     Route::prefix('ebanking')->name('ebanking.')->group(function () {
         Route::get('/login', function () {
