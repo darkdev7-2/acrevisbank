@@ -192,6 +192,180 @@
         </div>
     </section>
 
+    <!-- Credit Request CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-pink-600 to-purple-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h2 class="text-4xl font-bold mb-4">
+                        @if($currentLocale === 'fr')
+                            Besoin d'un crédit ?
+                        @elseif($currentLocale === 'de')
+                            Kredit benötigt?
+                        @elseif($currentLocale === 'en')
+                            Need a loan?
+                        @else
+                            ¿Necesita un crédito?
+                        @endif
+                    </h2>
+                    <p class="text-xl text-pink-100 mb-6">
+                        @if($currentLocale === 'fr')
+                            Obtenez une réponse rapide pour votre demande de crédit. Taux avantageux et procédure simplifiée.
+                        @elseif($currentLocale === 'de')
+                            Erhalten Sie eine schnelle Antwort auf Ihre Kreditanfrage. Günstige Zinssätze und vereinfachtes Verfahren.
+                        @elseif($currentLocale === 'en')
+                            Get a quick response to your loan application. Competitive rates and simplified process.
+                        @else
+                            Obtenga una respuesta rápida a su solicitud de crédito. Tasas competitivas y proceso simplificado.
+                        @endif
+                    </p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>
+                                @if($currentLocale === 'fr')
+                                    Réponse en 24 heures
+                                @elseif($currentLocale === 'de')
+                                    Antwort innerhalb von 24 Stunden
+                                @elseif($currentLocale === 'en')
+                                    Response within 24 hours
+                                @else
+                                    Respuesta en 24 horas
+                                @endif
+                            </span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>
+                                @if($currentLocale === 'fr')
+                                    Taux à partir de 2.5%
+                                @elseif($currentLocale === 'de')
+                                    Zinssätze ab 2.5%
+                                @elseif($currentLocale === 'en')
+                                    Rates from 2.5%
+                                @else
+                                    Tasas desde 2.5%
+                                @endif
+                            </span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>
+                                @if($currentLocale === 'fr')
+                                    Montants jusqu'à CHF 500'000
+                                @elseif($currentLocale === 'de')
+                                    Beträge bis CHF 500'000
+                                @elseif($currentLocale === 'en')
+                                    Amounts up to CHF 500'000
+                                @else
+                                    Montos hasta CHF 500'000
+                                @endif
+                            </span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>
+                                @if($currentLocale === 'fr')
+                                    Sans engagement
+                                @elseif($currentLocale === 'de')
+                                    Unverbindlich
+                                @elseif($currentLocale === 'en')
+                                    No commitment
+                                @else
+                                    Sin compromiso
+                                @endif
+                            </span>
+                        </li>
+                    </ul>
+                    <a href="{{ route('credit.request', ['locale' => $currentLocale]) }}" class="inline-block bg-white text-pink-600 hover:bg-gray-50 font-bold px-8 py-4 rounded-md transition-colors text-lg shadow-lg hover:shadow-xl">
+                        @if($currentLocale === 'fr')
+                            Demander un crédit maintenant
+                        @elseif($currentLocale === 'de')
+                            Jetzt Kredit beantragen
+                        @elseif($currentLocale === 'en')
+                            Apply for credit now
+                        @else
+                            Solicitar crédito ahora
+                        @endif
+                        <svg class="w-5 h-5 inline ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="relative">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-8">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="bg-white/20 rounded-lg p-6 text-center">
+                                <div class="text-4xl font-bold text-white mb-2">2.5%</div>
+                                <div class="text-sm text-pink-100">
+                                    @if($currentLocale === 'fr')
+                                        Taux dès
+                                    @elseif($currentLocale === 'de')
+                                        Zinssatz ab
+                                    @elseif($currentLocale === 'en')
+                                        Rate from
+                                    @else
+                                        Tasa desde
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="bg-white/20 rounded-lg p-6 text-center">
+                                <div class="text-4xl font-bold text-white mb-2">24h</div>
+                                <div class="text-sm text-pink-100">
+                                    @if($currentLocale === 'fr')
+                                        Réponse rapide
+                                    @elseif($currentLocale === 'de')
+                                        Schnelle Antwort
+                                    @elseif($currentLocale === 'en')
+                                        Quick response
+                                    @else
+                                        Respuesta rápida
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="bg-white/20 rounded-lg p-6 text-center">
+                                <div class="text-4xl font-bold text-white mb-2">500K</div>
+                                <div class="text-sm text-pink-100">
+                                    @if($currentLocale === 'fr')
+                                        CHF max
+                                    @elseif($currentLocale === 'de')
+                                        CHF max
+                                    @elseif($currentLocale === 'en')
+                                        CHF max
+                                    @else
+                                        CHF máx
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="bg-white/20 rounded-lg p-6 text-center">
+                                <div class="text-4xl font-bold text-white mb-2">0</div>
+                                <div class="text-sm text-pink-100">
+                                    @if($currentLocale === 'fr')
+                                        Frais dossier
+                                    @elseif($currentLocale === 'de')
+                                        Gebühren
+                                    @elseif($currentLocale === 'en')
+                                        Setup fees
+                                    @else
+                                        Gastos apertura
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Aktuelles (News/Blog) Section -->
     <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
