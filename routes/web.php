@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SetLocale;
+use App\Http\Controllers\ServiceController;
 
 // Redirect root to default locale
 Route::get('/', function () {
@@ -33,6 +34,10 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
 
     // Services
     Route::prefix('services')->name('services.')->group(function () {
+        // Services index with dynamic filtering
+        Route::get('/', [ServiceController::class, 'index'])->name('index');
+
+        // Legacy static service pages (kept for backwards compatibility)
         Route::get('/accounts', function () {
             return view('pages.services.accounts');
         })->name('accounts');
@@ -53,10 +58,8 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
             return view('pages.services.about');
         })->name('about');
 
-        Route::get('/{slug}', function ($locale, $slug) {
-            // Service detail page
-            return view('pages.services.detail', compact('slug'));
-        })->name('detail');
+        // Dynamic service detail page (database-driven)
+        Route::get('/{slug}', [ServiceController::class, 'show'])->name('detail');
     });
 
     // Credit Request
