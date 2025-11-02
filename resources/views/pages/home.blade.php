@@ -12,6 +12,18 @@
             ->latest('published_at')
             ->take(2)
             ->get();
+
+        // Load all active agencies grouped by city
+        $agencies = \App\Models\Agency::where('is_active', true)
+            ->orderBy('city')
+            ->get()
+            ->groupBy('city');
+
+        // Get distinct cities for dropdown
+        $cities = $agencies->keys();
+
+        // Default city
+        $defaultCity = $cities->first() ?? 'St.Gallen';
     @endphp
 
     <!-- Hero Section -->
@@ -483,7 +495,32 @@
     </section>
 
     <!-- Meine Bank in der Nähe -->
-    <section class="py-16 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop');">
+    <section class="py-16 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop');"
+             x-data="{
+                selectedCity: '{{ $defaultCity }}',
+                agencies: {!! json_encode($agencies->map(function($cityAgencies) use ($currentLocale) {
+                    return $cityAgencies->map(function($agency) use ($currentLocale) {
+                        return [
+                            'name' => $agency->getTranslation('name', $currentLocale),
+                            'address' => $agency->getTranslation('address', $currentLocale),
+                            'city' => $agency->city,
+                            'postal_code' => $agency->postal_code,
+                            'phone' => $agency->phone,
+                            'email' => $agency->email,
+                        ];
+                    });
+                })) !!},
+                get currentAgency() {
+                    return this.agencies[this.selectedCity]?.[0] || {
+                        name: 'Acrevis Bank',
+                        city: this.selectedCity,
+                        postal_code: '',
+                        address: '',
+                        phone: '',
+                        email: ''
+                    };
+                }
+             }">
         <div class="bg-black/40 py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-md bg-white rounded-lg p-8 shadow-xl">
@@ -498,22 +535,32 @@
                             Mi banco cerca
                         @endif
                     </h2>
-                    <select class="w-full px-4 py-3 border border-gray-300 rounded-md mb-4 focus:ring-pink-500 focus:border-pink-500">
-                        <option>St.Gallen</option>
-                        <option>Zürich</option>
-                        <option>Bern</option>
-                        <option>Basel</option>
+                    <select x-model="selectedCity" class="w-full px-4 py-3 border border-gray-300 rounded-md mb-4 focus:ring-pink-500 focus:border-pink-500">
+                        @foreach($cities as $city)
+                            <option value="{{ $city }}">{{ $city }}</option>
+                        @endforeach
                     </select>
                     <div class="mt-4">
                         <div class="flex items-start space-x-3">
-                            <svg class="w-5 h-5 text-pink-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-pink-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                             <div>
-                                <p class="font-semibold">acrevis Bank</p>
-                                <p class="text-sm text-gray-600">9004 St.Gallen</p>
-                                <p class="text-sm text-gray-600">Marktplatz 1</p>
+                                <p class="font-semibold" x-text="currentAgency.name"></p>
+                                <p class="text-sm text-gray-600">
+                                    <span x-text="currentAgency.postal_code"></span>
+                                    <span x-text="currentAgency.city"></span>
+                                </p>
+                                <p class="text-sm text-gray-600" x-text="currentAgency.address"></p>
+                                <template x-if="currentAgency.phone">
+                                    <p class="text-sm text-gray-600 mt-2">
+                                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                        </svg>
+                                        <span x-text="currentAgency.phone"></span>
+                                    </p>
+                                </template>
                             </div>
                         </div>
                     </div>

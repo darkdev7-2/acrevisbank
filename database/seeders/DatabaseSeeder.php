@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             ServicesSeeder::class,
             ArticleSeeder::class,
+            AgencySeeder::class,
         ]);
 
         // Create a test user (only if doesn't exist)
