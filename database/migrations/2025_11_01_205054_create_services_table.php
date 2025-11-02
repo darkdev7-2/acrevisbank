@@ -17,8 +17,8 @@ return new class extends Migration
             $table->json('description')->nullable(); // Multilingue
             $table->json('content')->nullable(); // Multilingue - contenu détaillé
             $table->string('slug')->unique();
-            $table->string('type'); // compte, credit, hypotheque, carte, placement, prevoyance, etc.
-            $table->string('segment')->default('both'); // privat, entreprise, both
+            $table->string('category'); // Comptes & Cartes, Hypothèques & Financements, etc.
+            $table->string('segment')->default('privat'); // privat, business
             $table->string('icon')->nullable(); // chemin vers icône ou nom d'icône
             $table->string('image')->nullable(); // image principale
             $table->json('features')->nullable(); // caractéristiques en JSON multilingue

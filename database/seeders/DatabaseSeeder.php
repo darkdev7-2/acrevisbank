@@ -13,11 +13,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed roles and permissions first
+        $this->call([
+            RolesAndPermissionsSeeder::class,
+            ServicesSeeder::class,
         ]);
+
+        // Create a test user (only if doesn't exist)
+        if (!User::where('email', 'test@example.com')->exists()) {
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
+
+        // Create admin user (only if doesn't exist)
+        if (!User::where('email', 'admin@acrevis.ch')->exists()) {
+            $admin = User::factory()->create([
+                'name' => 'Admin Acrevis',
+                'email' => 'admin@acrevis.ch',
+            ]);
+            $admin->assignRole('admin');
+        }
     }
 }

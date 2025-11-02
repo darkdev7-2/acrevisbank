@@ -15,7 +15,7 @@ class Service extends Model
         'description',
         'content',
         'slug',
-        'type',
+        'category',
         'segment',
         'icon',
         'image',
@@ -56,7 +56,7 @@ class Service extends Model
             'title' => $this->getTranslations('title'),
             'description' => $this->getTranslations('description'),
             'content' => $this->getTranslations('content'),
-            'type' => $this->type,
+            'category' => $this->category,
             'segment' => $this->segment,
         ];
     }
