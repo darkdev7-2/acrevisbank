@@ -37,25 +37,25 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         // Services index with dynamic filtering
         Route::get('/', [ServiceController::class, 'index'])->name('index');
 
-        // Legacy static service pages (kept for backwards compatibility)
-        Route::get('/accounts', function () {
-            return view('pages.services.accounts');
+        // Legacy routes redirect to new dynamic system
+        Route::get('/accounts', function ($locale) {
+            return redirect()->route('services.index', ['locale' => $locale, 'category' => 'Comptes & Cartes']);
         })->name('accounts');
 
-        Route::get('/housing', function () {
-            return view('pages.services.housing');
+        Route::get('/housing', function ($locale) {
+            return redirect()->route('services.index', ['locale' => $locale, 'category' => 'Hypothèques & Financements']);
         })->name('housing');
 
-        Route::get('/invest', function () {
-            return view('pages.services.invest');
+        Route::get('/invest', function ($locale) {
+            return redirect()->route('services.index', ['locale' => $locale, 'category' => 'Placements & Épargne']);
         })->name('invest');
 
-        Route::get('/planning', function () {
-            return view('pages.services.planning');
+        Route::get('/planning', function ($locale) {
+            return redirect()->route('services.index', ['locale' => $locale, 'category' => 'Prévoyance']);
         })->name('planning');
 
-        Route::get('/about', function () {
-            return view('pages.services.about');
+        Route::get('/about', function ($locale) {
+            return redirect()->route('services.index', ['locale' => $locale]);
         })->name('about');
 
         // Dynamic service detail page (database-driven)
