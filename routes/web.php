@@ -89,11 +89,21 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
 
     // Blog
     Route::get('/blog', function () {
-        return view('pages.blog.index');
+        $articles = \App\Models\Article::where('is_published', true)
+            ->latest('published_at')
+            ->get();
+        return view('pages.blog.index', compact('articles'));
     })->name('blog');
 
     Route::get('/blog/{slug}', function ($locale, $slug) {
-        return view('pages.blog.show', compact('slug'));
+        $article = \App\Models\Article::where('slug', $slug)
+            ->where('is_published', true)
+            ->firstOrFail();
+
+        // Increment views
+        $article->increment('views');
+
+        return view('pages.blog.show', compact('article'));
     })->name('blog.show');
 
     // About

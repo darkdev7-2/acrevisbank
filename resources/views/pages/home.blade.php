@@ -222,63 +222,36 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- News Card 1 -->
-                <div class="flex space-x-4">
-                    <div class="flex-shrink-0 w-48 h-32 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop');"></div>
-                    <div class="flex-1">
-                        <span class="text-sm text-gray-500">
-                            @if($currentLocale === 'fr')
-                                Actualités
-                            @elseif($currentLocale === 'de')
-                                Aktuelles
-                            @elseif($currentLocale === 'en')
-                                News
-                            @else
-                                Noticias
-                            @endif
-                        </span>
-                        <h3 class="text-lg font-semibold mb-2 hover:text-pink-600 cursor-pointer">
-                            @if($currentLocale === 'fr')
-                                Nouveau E-Banking et Mobile Banking: Lancement fin octobre 2025
-                            @elseif($currentLocale === 'de')
-                                Neues E-Banking und Mobile Banking: Einführung ab Ende Oktober 2025
-                            @elseif($currentLocale === 'en')
-                                New E-Banking and Mobile Banking: Launch end of October 2025
-                            @else
-                                Nuevo E-Banking y Mobile Banking: Lanzamiento finales de octubre 2025
-                            @endif
-                        </h3>
+                @forelse($latestArticles as $article)
+                    <a href="{{ route('blog.show', ['locale' => $currentLocale, 'slug' => $article->slug]) }}" class="flex space-x-4 group">
+                        <div class="flex-shrink-0 w-48 h-32 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('{{ $article->featured_image ?? 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&h=300&fit=crop' }}');"></div>
+                        <div class="flex-1">
+                            <span class="text-sm text-gray-500">
+                                @if($currentLocale === 'fr')
+                                    Actualités
+                                @elseif($currentLocale === 'de')
+                                    Aktuelles
+                                @elseif($currentLocale === 'en')
+                                    News
+                                @else
+                                    Noticias
+                                @endif
+                            </span>
+                            <h3 class="text-lg font-semibold mb-2 group-hover:text-pink-600 transition-colors">
+                                {{ $article->getTranslation('title', $currentLocale) }}
+                            </h3>
+                            <p class="text-sm text-gray-600 line-clamp-2">
+                                {{ $article->getTranslation('excerpt', $currentLocale) }}
+                            </p>
+                        </div>
+                    </a>
+                @empty
+                    <div class="col-span-2 text-center text-gray-500">
+                        {{ $currentLocale === 'fr' ? 'Aucun article pour le moment' :
+                           ($currentLocale === 'de' ? 'Derzeit keine Artikel' :
+                           ($currentLocale === 'en' ? 'No articles yet' : 'No hay artículos todavía')) }}
                     </div>
-                </div>
-
-                <!-- News Card 2 -->
-                <div class="flex space-x-4">
-                    <div class="flex-shrink-0 w-48 h-32 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=300&fit=crop');"></div>
-                    <div class="flex-1">
-                        <span class="text-sm text-gray-500">
-                            @if($currentLocale === 'fr')
-                                Actualités
-                            @elseif($currentLocale === 'de')
-                                Aktuelles
-                            @elseif($currentLocale === 'en')
-                                News
-                            @else
-                                Noticias
-                            @endif
-                        </span>
-                        <h3 class="text-lg font-semibold mb-2 hover:text-pink-600 cursor-pointer">
-                            @if($currentLocale === 'fr')
-                                Les assurances techniques sont en cours
-                            @elseif($currentLocale === 'de')
-                                Teknische Versicherungen sind im Gange
-                            @elseif($currentLocale === 'en')
-                                Technical insurances are underway
-                            @else
-                                Los seguros técnicos están en curso
-                            @endif
-                        </h3>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
