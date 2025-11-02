@@ -62,7 +62,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Service Card 1 -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
-                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1556742400-b5d5b7b1b06a?w=600&h=400&fit=crop');"></div>
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop');"></div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
                             @if($currentLocale === 'fr')
@@ -86,7 +86,7 @@
                                 Gestione sus cuentas en línea 24/7 con nuestra plataforma segura
                             @endif
                         </p>
-                        <a href="{{ route('ebanking.login', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Comptes & Cartes']) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
                             @if($currentLocale === 'fr')
                                 En savoir plus
                             @elseif($currentLocale === 'de')
@@ -105,7 +105,7 @@
 
                 <!-- Service Card 2 -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
-                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop');"></div>
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&h=400&fit=crop');"></div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
                             @if($currentLocale === 'fr')
@@ -129,7 +129,7 @@
                                 Hipotecas ventajosas para su proyecto inmobiliario
                             @endif
                         </p>
-                        <a href="{{ route('services.housing', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Hypothèques & Financements']) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
                             @if($currentLocale === 'fr')
                                 En savoir plus
                             @elseif($currentLocale === 'de')
@@ -148,7 +148,7 @@
 
                 <!-- Service Card 3 -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
-                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop');"></div>
+                    <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop');"></div>
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
                             @if($currentLocale === 'fr')
@@ -172,7 +172,7 @@
                                 Planifique su futuro financiero con nuestros expertos
                             @endif
                         </p>
-                        <a href="{{ route('services.planning', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Placements & Épargne']) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
                             @if($currentLocale === 'fr')
                                 En savoir plus
                             @elseif($currentLocale === 'de')
