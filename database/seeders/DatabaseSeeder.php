@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             ServicesSeeder::class,
+            ArticleSeeder::class,
         ]);
 
         // Create a test user (only if doesn't exist)

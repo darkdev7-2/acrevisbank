@@ -2,6 +2,16 @@
     @php
         $currentLocale = app()->getLocale();
         $currentSegment = session('segment', 'privat');
+
+        // Load latest published articles
+        $latestArticles = \App\Models\Article::where('is_published', true)
+            ->where(function($query) use ($currentSegment) {
+                $query->where('segment', $currentSegment)
+                    ->orWhere('segment', 'both');
+            })
+            ->latest('published_at')
+            ->take(2)
+            ->get();
     @endphp
 
     <!-- Hero Section -->
@@ -11,7 +21,7 @@
             <div class="max-w-2xl text-white">
                 <h1 class="text-5xl font-bold mb-6">
                     @if($currentLocale === 'fr')
-                        Actien, Obligationen, Immobilien: Wie lege ich mein Geld am besten an?
+                        Actions, Obligations, Immobilier : Comment investir au mieux mon argent ?
                     @elseif($currentLocale === 'de')
                         Aktien, Obligationen, Immobilien: Wie lege ich mein Geld am besten an?
                     @elseif($currentLocale === 'en')
