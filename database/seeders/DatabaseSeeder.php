@@ -35,7 +35,11 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin Acrevis',
                 'email' => 'admin@acrevis.ch',
             ]);
-            $admin->assignRole('admin');
+            $admin->assignRole('Admin');
         }
+
+        $this->command->info('✅ Admin user created:');
+        $this->command->info('   Email: admin@acrevis.ch');
+        $this->command->info('   Password: password (default factory password)');
     }
 }

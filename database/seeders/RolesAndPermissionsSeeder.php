@@ -158,6 +158,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'access dashboard',
         ]);
 
+        // 5. Customer - Basic client permissions
+        $customer = Role::create(['name' => 'Customer']);
+        $customer->givePermissionTo([
+            'create credit requests',
+        ]);
+
         $this->command->info('Roles and permissions created successfully!');
         $this->command->info('');
         $this->command->info('Roles created:');
@@ -165,5 +171,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->command->info('2. Admin - Most permissions');
         $this->command->info('3. Credit Manager - Credit and client management');
         $this->command->info('4. Content Manager - Content and marketing management');
+        $this->command->info('5. Customer - Basic client access');
     }
 }
