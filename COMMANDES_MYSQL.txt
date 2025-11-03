@@ -1,0 +1,106 @@
+═══════════════════════════════════════════════════════════════════════════
+  ACREVIS BANK - COMMANDES MYSQL EXACTES
+═══════════════════════════════════════════════════════════════════════════
+
+ÉTAPE 1 : CRÉER LA BASE DE DONNÉES
+───────────────────────────────────────────────────────────────────────────
+
+Connectez-vous à MySQL :
+    mysql -u root -p
+
+Puis exécutez ces commandes dans MySQL :
+    CREATE DATABASE acrevisbank CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    CREATE USER 'acrevis'@'localhost' IDENTIFIED BY 'MotDePasse123!';
+    GRANT ALL PRIVILEGES ON acrevisbank.* TO 'acrevis'@'localhost';
+    FLUSH PRIVILEGES;
+    EXIT;
+
+
+ÉTAPE 2 : CONFIGURER LE .env
+───────────────────────────────────────────────────────────────────────────
+
+Modifiez votre fichier .env :
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=acrevisbank
+DB_USERNAME=acrevis
+DB_PASSWORD=MotDePasse123!
+
+
+ÉTAPE 3 : MÉTHODE AUTOMATIQUE (RECOMMANDÉE)
+───────────────────────────────────────────────────────────────────────────
+
+Exécutez simplement :
+    ./setup-mysql.sh
+
+Si erreur de permission :
+    chmod +x setup-mysql.sh
+    ./setup-mysql.sh
+
+
+ÉTAPE 4 : MÉTHODE MANUELLE
+───────────────────────────────────────────────────────────────────────────
+
+composer install
+npm install
+npm run build
+php artisan key:generate
+php artisan config:clear
+php artisan migrate
+php artisan db:seed
+
+
+ÉTAPE 5 : DÉMARRER LE PROJET
+───────────────────────────────────────────────────────────────────────────
+
+Terminal 1 :
+    php artisan serve
+
+Terminal 2 (optionnel, pour le développement) :
+    npm run dev
+
+Ouvrez : http://localhost:8000
+
+
+═══════════════════════════════════════════════════════════════════════════
+  COMPTES DE TEST
+═══════════════════════════════════════════════════════════════════════════
+
+ADMIN
+    URL : http://localhost:8000/admin
+    Email : admin@acrevis.ch
+    Password : password
+
+CLIENT
+    URL : http://localhost:8000/fr/dashboard
+    Email : test@example.com
+    Password : password
+
+
+═══════════════════════════════════════════════════════════════════════════
+  DÉPANNAGE
+═══════════════════════════════════════════════════════════════════════════
+
+MySQL n'est pas démarré :
+    sudo systemctl start mysql
+    OU
+    sudo service mysql start
+
+Vérifier le statut MySQL :
+    sudo systemctl status mysql
+
+Recréer la base de données :
+    mysql -u root -p -e "DROP DATABASE IF EXISTS acrevisbank; CREATE DATABASE acrevisbank CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    php artisan migrate:fresh --seed
+
+Réinitialiser tout :
+    php artisan config:clear
+    php artisan cache:clear
+    php artisan route:clear
+    php artisan view:clear
+    php artisan migrate:fresh --seed
+
+
+═══════════════════════════════════════════════════════════════════════════
