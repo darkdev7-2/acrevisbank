@@ -6,6 +6,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BeneficiaryController;
+use App\Http\Controllers\TransactionExportController;
 
 // Redirect root to detected or default locale
 Route::get('/', function () {
@@ -160,6 +161,11 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         Route::get('/transfer', [DashboardController::class, 'transfer'])->name('transfer');
         Route::post('/transfer/confirm', [DashboardController::class, 'confirmTransfer'])->name('transfer.confirm');
         Route::post('/transfer/execute', [DashboardController::class, 'executeTransfer'])->name('transfer.execute');
+
+        // Transaction exports
+        Route::get('/account/{accountId}/export/pdf', [TransactionExportController::class, 'exportPDF'])->name('transactions.export.pdf');
+        Route::get('/account/{accountId}/export/csv', [TransactionExportController::class, 'exportCSV'])->name('transactions.export.csv');
+        Route::get('/transaction/{transactionId}/receipt', [TransactionExportController::class, 'downloadReceipt'])->name('transaction.receipt');
 
         // Beneficiaries management
         Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {

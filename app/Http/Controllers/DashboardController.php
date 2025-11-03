@@ -34,16 +34,47 @@ class DashboardController extends Controller
         return view('pages.dashboard.index', compact('user', 'accounts', 'recentTransactions', 'totalBalance'));
     }
 
-    public function account($id)
+    public function account(Request $request, $locale, $id)
     {
         $user = Auth::user();
         $account = Account::where('id', $id)
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        $transactions = $account->transactions()
-            ->orderBy('transaction_date', 'desc')
-            ->paginate(20);
+        // Build query with filters
+        $query = $account->transactions()->orderBy('transaction_date', 'desc');
+
+        // Apply filters
+        if ($request->has('date_from') && $request->date_from) {
+            $query->where('transaction_date', '>=', Carbon::parse($request->date_from));
+        }
+
+        if ($request->has('date_to') && $request->date_to) {
+            $query->where('transaction_date', '<=', Carbon::parse($request->date_to)->endOfDay());
+        }
+
+        if ($request->has('type') && $request->type && $request->type !== 'all') {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->has('min_amount') && $request->min_amount) {
+            $query->where('amount', '>=', $request->min_amount);
+        }
+
+        if ($request->has('max_amount') && $request->max_amount) {
+            $query->where('amount', '<=', $request->max_amount);
+        }
+
+        if ($request->has('search') && $request->search) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('description', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('recipient_name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('reference', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $transactions = $query->paginate(20)->appends($request->except('page'));
 
         return view('pages.dashboard.account', compact('account', 'transactions'));
     }
