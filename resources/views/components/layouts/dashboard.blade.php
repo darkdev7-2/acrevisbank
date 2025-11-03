@@ -7,12 +7,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50">
+    @php
+        $currentLocale = app()->getLocale();
+    @endphp
+
     <div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: true, mobileMenuOpen: false }">
         <!-- Sidebar Desktop -->
         <aside :class="sidebarOpen ? 'w-64' : 'w-20'" class="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 transition-all duration-300 bg-gradient-to-b from-pink-600 to-pink-700 text-white shadow-xl z-20">
             <!-- Logo Section -->
             <div class="flex items-center justify-between px-4 py-6 border-b border-pink-500/30">
-                <a href="{{ route('dashboard.index', ['locale' => app()->getLocale()]) }}" class="flex items-center" :class="!sidebarOpen && 'justify-center w-full'">
+                <a href="{{ route('dashboard.index', ['locale' => $currentLocale]) }}" class="flex items-center" :class="!sidebarOpen && 'justify-center w-full'">
                     <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
                     </svg>
@@ -41,7 +45,6 @@
             <!-- Navigation -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 @php
-                    $currentLocale = app()->getLocale();
                     $currentRoute = request()->route()->getName();
 
                     $menuItems = [
