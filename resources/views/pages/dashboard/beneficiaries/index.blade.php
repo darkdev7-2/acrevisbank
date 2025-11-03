@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-layouts.dashboard>
     @php
         $currentLocale = app()->getLocale();
 
@@ -192,4 +192,4 @@
             @endforelse
         </div>
     </div>
-</x-layouts.app>
+</x-layouts.dashboard>

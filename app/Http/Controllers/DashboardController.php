@@ -172,8 +172,14 @@ class DashboardController extends Controller
         // Clear session
         session()->forget('pending_transfer');
 
-        // Store transaction ID for receipt
-        session()->flash('transfer_success', $transaction->id);
+        // Store transaction details for receipt download
+        session()->flash('transfer_success', [
+            'transaction_id' => $transaction->id,
+            'reference' => $transaction->reference,
+            'amount' => $transaction->amount,
+            'recipient_name' => $transaction->recipient_name,
+            'recipient_iban' => $transaction->recipient_iban,
+        ]);
 
         return redirect()->route('dashboard.index', ['locale' => app()->getLocale()])
             ->with('success', 'Transfert effectué avec succès');

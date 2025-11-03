@@ -1,4 +1,4 @@
-<x-layouts.app>
+<x-layouts.dashboard>
     @php
         $currentLocale = app()->getLocale();
 
@@ -93,29 +93,19 @@
     @endphp
 
     <x-slot name="title">{{ $account->account_type }}</x-slot>
+    <x-slot name="pageTitle">{{ $account->account_type }}</x-slot>
+    <x-slot name="pageSubtitle">{{ $t['opened_on'] }} {{ $account->opened_at->format('d.m.Y') }} • {{ $t['balance'] }}: {{ $account->formatted_balance }}</x-slot>
 
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-pink-600 to-pink-700 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('dashboard.index', ['locale' => $currentLocale]) }}" class="inline-flex items-center text-pink-100 hover:text-white mb-4 transition-colors">
+    <div class="p-4 sm:p-6 lg:p-8">
+        <div class="mb-4">
+            <a href="{{ route('dashboard.index', ['locale' => $currentLocale]) }}"
+               class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium transition-colors">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
                 {{ $t['back'] }}
             </a>
-            <div class="flex items-start justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold mb-2">{{ $account->account_type }}</h1>
-                    <p class="text-pink-100">{{ $t['opened_on'] }} {{ $account->opened_at->format('d.m.Y') }}</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-pink-100 text-sm mb-1">{{ $t['balance'] }}</p>
-                    <p class="text-3xl font-bold">{{ $account->formatted_balance }}</p>
-                </div>
-            </div>
         </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="py-8 bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Account Info Card -->
             <div class="bg-white rounded-lg shadow-md p-6 mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -134,18 +124,183 @@
                 </div>
             </div>
 
-            <!-- Actions Bar -->
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">{{ $t['transactions'] }}</h2>
-                <div class="flex gap-3">
+            <!-- Filters & Export Section -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">{{ $t['export'] }} & Filtres</h3>
+                    <button onclick="toggleFilters()" type="button" class="text-sm text-pink-600 hover:text-pink-700 font-medium">
+                        <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        <span id="filterToggleText">Afficher les filtres</span>
+                    </button>
+                </div>
+
+                <!-- Filter Form (Hidden by default) -->
+                <div id="filterForm" class="hidden mb-6">
+                    <form method="GET" action="{{ route('dashboard.account', ['locale' => $currentLocale, 'id' => $account->id]) }}" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Date From -->
+                            <div>
+                                <label for="date_from" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                                <input type="date"
+                                       name="date_from"
+                                       id="date_from"
+                                       value="{{ request('date_from') }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                            </div>
+
+                            <!-- Date To -->
+                            <div>
+                                <label for="date_to" class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                                <input type="date"
+                                       name="date_to"
+                                       id="date_to"
+                                       value="{{ request('date_to') }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                            </div>
+
+                            <!-- Type -->
+                            <div>
+                                <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                <select name="type"
+                                        id="type"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                                    <option value="all" {{ request('type', 'all') === 'all' ? 'selected' : '' }}>Tous</option>
+                                    <option value="debit" {{ request('type') === 'debit' ? 'selected' : '' }}>Débits</option>
+                                    <option value="credit" {{ request('type') === 'credit' ? 'selected' : '' }}>Crédits</option>
+                                </select>
+                            </div>
+
+                            <!-- Min Amount -->
+                            <div>
+                                <label for="min_amount" class="block text-sm font-medium text-gray-700 mb-1">Montant min (CHF)</label>
+                                <input type="number"
+                                       name="min_amount"
+                                       id="min_amount"
+                                       step="0.01"
+                                       value="{{ request('min_amount') }}"
+                                       placeholder="0.00"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                            </div>
+
+                            <!-- Max Amount -->
+                            <div>
+                                <label for="max_amount" class="block text-sm font-medium text-gray-700 mb-1">Montant max (CHF)</label>
+                                <input type="number"
+                                       name="max_amount"
+                                       id="max_amount"
+                                       step="0.01"
+                                       value="{{ request('max_amount') }}"
+                                       placeholder="0.00"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                            </div>
+
+                            <!-- Search -->
+                            <div>
+                                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Rechercher</label>
+                                <input type="text"
+                                       name="search"
+                                       id="search"
+                                       value="{{ request('search') }}"
+                                       placeholder="Description, bénéficiaire, référence..."
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex gap-3">
+                            <button type="submit" class="px-6 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors font-medium">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                                </svg>
+                                Appliquer les filtres
+                            </button>
+                            <a href="{{ route('dashboard.account', ['locale' => $currentLocale, 'id' => $account->id]) }}"
+                               class="px-6 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors font-medium">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                Réinitialiser
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Export Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('dashboard.transactions.export.pdf', ['locale' => $currentLocale, 'accountId' => $account->id]) }}?{{ http_build_query(request()->except('page')) }}"
+                       target="_blank"
+                       class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        Exporter PDF
+                    </a>
+                    <a href="{{ route('dashboard.transactions.export.csv', ['locale' => $currentLocale, 'accountId' => $account->id]) }}?{{ http_build_query(request()->except('page')) }}"
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Exporter CSV
+                    </a>
                     <a href="{{ route('dashboard.transfer', ['locale' => $currentLocale]) }}"
-                       class="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors">
+                       class="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors font-medium ml-auto">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                         </svg>
                         {{ $t['new_transfer'] }}
                     </a>
                 </div>
+
+                <!-- Active Filters Display -->
+                @php
+                    $hasFilters = request()->hasAny(['date_from', 'date_to', 'type', 'min_amount', 'max_amount', 'search']) &&
+                                  (request('date_from') || request('date_to') || request('type') !== 'all' || request('min_amount') || request('max_amount') || request('search'));
+                @endphp
+
+                @if($hasFilters)
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <span class="text-sm font-medium text-gray-700">Filtres actifs:</span>
+                            @if(request('date_from'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                    Du: {{ request('date_from') }}
+                                </span>
+                            @endif
+                            @if(request('date_to'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                    Au: {{ request('date_to') }}
+                                </span>
+                            @endif
+                            @if(request('type') && request('type') !== 'all')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                    Type: {{ request('type') === 'debit' ? 'Débits' : 'Crédits' }}
+                                </span>
+                            @endif
+                            @if(request('min_amount'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                    Min: {{ request('min_amount') }} CHF
+                                </span>
+                            @endif
+                            @if(request('max_amount'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                    Max: {{ request('max_amount') }} CHF
+                                </span>
+                            @endif
+                            @if(request('search'))
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                    Recherche: "{{ request('search') }}"
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">{{ $t['transactions'] }}</h2>
             </div>
 
             <!-- Transactions Table -->
@@ -221,6 +376,32 @@
                     </div>
                 @endif
             </div>
-        </div>
     </div>
-</x-layouts.app>
+
+    <script>
+        function toggleFilters() {
+            const filterForm = document.getElementById('filterForm');
+            const toggleText = document.getElementById('filterToggleText');
+
+            if (filterForm.classList.contains('hidden')) {
+                filterForm.classList.remove('hidden');
+                toggleText.textContent = 'Masquer les filtres';
+            } else {
+                filterForm.classList.add('hidden');
+                toggleText.textContent = 'Afficher les filtres';
+            }
+        }
+
+        // Auto-show filters if any filter is active
+        @php
+            $hasFilters = request()->hasAny(['date_from', 'date_to', 'type', 'min_amount', 'max_amount', 'search']) &&
+                          (request('date_from') || request('date_to') || request('type') !== 'all' || request('min_amount') || request('max_amount') || request('search'));
+        @endphp
+
+        @if($hasFilters)
+            document.addEventListener('DOMContentLoaded', function() {
+                toggleFilters();
+            });
+        @endif
+    </script>
+</x-layouts.dashboard>
