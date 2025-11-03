@@ -105,9 +105,13 @@ class CreditRequestForm extends Component
             $attachmentPath = $this->attachment->store('credit-requests', 'public');
         }
 
+        // Generate unique reference number
+        $referenceNumber = 'CR-' . strtoupper(uniqid()) . '-' . date('Y');
+
         // Create credit request
         $creditRequest = CreditRequest::create([
             'user_id' => auth()->id(),
+            'reference_number' => $referenceNumber,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'gender' => $this->gender,
@@ -136,6 +140,7 @@ class CreditRequestForm extends Component
         // Mail::to($this->email)->send(new CreditRequestConfirmation($creditRequest));
 
         session()->flash('message', 'Votre demande de crédit a été envoyée avec succès!');
+        session()->flash('reference_number', $referenceNumber);
 
         // Redirect to confirmation page
         return redirect()->route('credit.confirmation', ['locale' => app()->getLocale()]);

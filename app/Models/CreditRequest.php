@@ -8,6 +8,7 @@ class CreditRequest extends Model
 {
     protected $fillable = [
         'user_id',
+        'reference_number',
         'first_name',
         'last_name',
         'gender',

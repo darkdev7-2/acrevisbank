@@ -1,0 +1,155 @@
+═══════════════════════════════════════════════════════════════════════════
+  SOLUTIONS AUX PROBLÈMES IDENTIFIÉS
+═══════════════════════════════════════════════════════════════════════════
+
+PROBLÈME 1 : Erreur 404 sur les pages de services (/services/compte-prive)
+───────────────────────────────────────────────────────────────────────────
+
+CAUSE :
+La base de données MySQL n'est pas démarrée ou les migrations n'ont pas été exécutées.
+
+SOLUTION :
+
+1. Démarrer MySQL :
+   sudo systemctl start mysql
+   # OU
+   sudo service mysql start
+
+2. Vérifier que MySQL fonctionne :
+   sudo systemctl status mysql
+
+3. Exécuter les migrations et seeders :
+   php artisan migrate:fresh --seed
+
+   Cette commande va :
+   - Créer toutes les tables
+   - Insérer 52 services bancaires dans la base de données
+   - Créer les utilisateurs admin et test
+   - Créer les articles, agences, carrières
+   - Créer les comptes bancaires avec transactions
+
+4. Tester l'accès aux services :
+   http://127.0.0.1:8000/fr/services
+   http://127.0.0.1:8000/fr/services/compte-prive
+
+VÉRIFICATION :
+✓ Les services devraient maintenant s'afficher correctement
+✓ Vous pouvez cliquer sur n'importe quel service pour voir ses détails
+✓ 52 services sont disponibles dans différentes catégories
+
+
+PROBLÈME 2 : Vérification du formulaire de demande de crédit
+───────────────────────────────────────────────────────────────────────────
+
+STATUT : ✅ FONCTIONNEL + AMÉLIORÉ
+
+AMÉLIORATIONS APPORTÉES :
+1. ✅ Ajout d'un numéro de référence unique pour chaque demande
+2. ✅ Affichage du numéro de référence sur la page de confirmation
+3. ✅ Format du numéro : CR-[UNIQUE_ID]-[ANNÉE] (ex: CR-655E8F2A-2025)
+
+FONCTIONNEMENT :
+
+Étape 1 - Remplir le formulaire :
+   http://127.0.0.1:8000/fr/credit-request
+
+   Le formulaire est en 3 étapes :
+   • Étape 1 : Informations personnelles
+   • Étape 2 : Coordonnées
+   • Étape 3 : Détails du crédit + pièce jointe (optionnel)
+
+Étape 2 - Soumission :
+   • La demande est enregistrée dans la table `credit_requests`
+   • Un numéro de référence unique est généré
+   • Statut : "pending" (en attente)
+
+Étape 3 - Confirmation :
+   • Redirection vers /credit-confirmation
+   • Affichage du message de succès
+   • Affichage du numéro de référence
+   • Prochaines étapes clairement indiquées
+
+DONNÉES ENREGISTRÉES :
+✓ Toutes les informations du formulaire
+✓ user_id (si connecté, sinon null)
+✓ reference_number (unique)
+✓ attachment_path (fichier uploadé si fourni)
+✓ status = 'pending'
+✓ timestamps (created_at, updated_at)
+
+ACCÈS ADMIN :
+Les demandes de crédit sont visibles dans le panel admin Filament :
+   http://127.0.0.1:8000/admin
+   Email: admin@acrevis.ch
+   Password: password
+
+   Depuis l'admin, vous pouvez :
+   • Voir toutes les demandes
+   • Filtrer par statut (pending, in_review, approved, rejected)
+   • Voir le numéro de référence
+   • Télécharger les pièces jointes
+   • Changer le statut
+   • Ajouter des notes
+
+
+NOUVELLES MIGRATIONS À EXÉCUTER
+───────────────────────────────────────────────────────────────────────────
+
+J'ai créé une nouvelle migration pour ajouter le champ reference_number :
+   database/migrations/2025_11_03_012820_add_reference_number_to_credit_requests_table.php
+
+Pour l'appliquer :
+   php artisan migrate
+
+   OU si vous voulez tout réinitialiser :
+   php artisan migrate:fresh --seed
+
+
+VÉRIFICATION COMPLÈTE
+───────────────────────────────────────────────────────────────────────────
+
+1. Démarrer MySQL :
+   sudo systemctl start mysql
+
+2. Réinitialiser la base de données :
+   php artisan migrate:fresh --seed
+
+3. Démarrer le serveur :
+   php artisan serve
+
+4. Tester les services :
+   http://127.0.0.1:8000/fr/services/compte-prive
+   ✓ La page devrait s'afficher avec les détails du service
+
+5. Tester le formulaire de crédit :
+   http://127.0.0.1:8000/fr/credit-request
+   ✓ Remplir le formulaire en 3 étapes
+   ✓ Soumettre
+   ✓ Vérifier la page de confirmation avec le numéro de référence
+
+6. Vérifier dans l'admin :
+   http://127.0.0.1:8000/admin
+   ✓ Se connecter (admin@acrevis.ch / password)
+   ✓ Aller dans "Credit Requests"
+   ✓ Voir la demande créée avec son numéro de référence
+
+
+RÉSUMÉ DES CHANGEMENTS
+───────────────────────────────────────────────────────────────────────────
+
+Fichiers modifiés :
+✅ database/migrations/2025_11_03_012820_add_reference_number_to_credit_requests_table.php (NOUVEAU)
+✅ app/Livewire/CreditRequestForm.php (ajout génération référence)
+✅ app/Models/CreditRequest.php (ajout reference_number au fillable)
+
+Fonctionnalités ajoutées :
+✅ Numéro de référence unique pour chaque demande
+✅ Affichage du numéro sur la page de confirmation
+✅ Stockage en base de données
+
+Problèmes résolus :
+✅ Services 404 → Documentation de la solution (démarrer MySQL + migrate)
+✅ Formulaire de crédit → Vérifié et amélioré avec numéro de référence
+
+
+═══════════════════════════════════════════════════════════════════════════
