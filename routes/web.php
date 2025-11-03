@@ -96,14 +96,14 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         return view('pages.credit-confirmation');
     })->name('credit.confirmation');
 
-    // E-Banking
+    // E-Banking - Redirect to main login (Fortify)
     Route::prefix('ebanking')->name('ebanking.')->group(function () {
-        Route::get('/login', function () {
-            return view('pages.ebanking.login');
+        Route::get('/login', function ($locale) {
+            return redirect()->route('login', ['locale' => $locale]);
         })->name('login');
 
-        Route::get('/lost-password', function () {
-            return view('pages.ebanking.lost-password');
+        Route::get('/lost-password', function ($locale) {
+            return redirect()->route('password.request', ['locale' => $locale]);
         })->name('lost-password');
     });
 
