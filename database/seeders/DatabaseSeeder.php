@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ServicesSeeder::class,
             ArticleSeeder::class,
             AgencySeeder::class,
+            CareerSeeder::class,
         ]);
 
         // Create a test user (only if doesn't exist)

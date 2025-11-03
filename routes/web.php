@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SetLocale;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\CareerController;
 
 // Redirect root to default locale
 Route::get('/', function () {
@@ -112,9 +113,10 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
     })->name('about');
 
     // Career
-    Route::get('/career', function () {
-        return view('pages.career');
-    })->name('career');
+    Route::prefix('career')->name('career.')->group(function () {
+        Route::get('/', [CareerController::class, 'index'])->name('index');
+        Route::get('/{slug}', [CareerController::class, 'show'])->name('show');
+    });
 
     // Newsletter
     Route::get('/newsletter', function () {

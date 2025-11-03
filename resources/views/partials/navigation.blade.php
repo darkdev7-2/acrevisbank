@@ -181,8 +181,8 @@
                             <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="block text-sm text-gray-700 hover:text-pink-600">
                                 Blog
                             </a>
-                            <a href="{{ route('career', ['locale' => $currentLocale]) }}" class="block text-sm text-gray-700 hover:text-pink-600">
-                                {{ $currentLocale === 'fr' ? 'Carrière' : ($currentLocale === 'de' ? 'Karriere' : ($currentLocale === 'en' ? 'Career' : 'Carrera')) }}
+                            <a href="{{ route('career.index', ['locale' => $currentLocale]) }}" class="block text-sm text-gray-700 hover:text-pink-600">
+                                {{ $currentLocale === 'fr' ? 'Carrières' : ($currentLocale === 'de' ? 'Karriere' : ($currentLocale === 'en' ? 'Careers' : 'Carreras')) }}
                             </a>
                             <a href="{{ route('contact', ['locale' => $currentLocale]) }}" class="block text-sm text-gray-700 hover:text-pink-600">
                                 Contact
