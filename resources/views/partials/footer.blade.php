@@ -67,8 +67,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('career', ['locale' => $currentLocale]) }}" class="text-sm text-gray-600 hover:text-pink-600">
-                            {{ $currentLocale === 'fr' ? 'Carrière' : ($currentLocale === 'de' ? 'Karriere' : ($currentLocale === 'en' ? 'Career' : 'Carrera')) }}
+                        <a href="{{ route('career.index', ['locale' => $currentLocale]) }}" class="text-sm text-gray-600 hover:text-pink-600">
+                            {{ $currentLocale === 'fr' ? 'Carrières' : ($currentLocale === 'de' ? 'Karriere' : ($currentLocale === 'en' ? 'Careers' : 'Carreras')) }}
                         </a>
                     </li>
                     <li>
