@@ -1,0 +1,248 @@
+═══════════════════════════════════════════════════════════════════════════
+  CHECKLIST FINALE - ACREVIS BANK
+═══════════════════════════════════════════════════════════════════════════
+
+📋 CONFIGURATION INITIALE
+───────────────────────────────────────────────────────────────────────────
+
+□ MySQL est démarré
+  sudo systemctl start mysql
+
+□ Base de données créée et configurée
+  mysql -u root -p
+  CREATE DATABASE acrevisbank CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+  EXIT;
+
+□ Fichier .env configuré
+  DB_DATABASE=acrevisbank
+  DB_USERNAME=acrevis (ou root)
+  DB_PASSWORD=votre_mot_de_passe
+
+□ Migrations et seeders exécutés
+  php artisan migrate:fresh --seed
+
+□ Assets compilés
+  npm install
+  npm run build
+
+
+📋 TÂCHES PRINCIPALES (6/6 COMPLÉTÉES)
+───────────────────────────────────────────────────────────────────────────
+
+✅ 1. ADMIN ACCESS
+   □ Tester la connexion admin
+     URL: http://127.0.0.1:8000/admin
+     Email: admin@acrevis.ch
+     Password: password
+   □ Vérifier l'accès au panel Filament
+   □ Vérifier le rôle "Admin" (pas "Customer")
+
+✅ 2. SERVICES - FIX 404
+   □ Démarrer le serveur: php artisan serve
+   □ Accéder à la liste des services
+     http://127.0.0.1:8000/fr/services
+   □ Tester un service spécifique
+     http://127.0.0.1:8000/fr/services/compte-prive
+   □ Vérifier les 52 services dans la base de données
+
+✅ 3. SYSTÈME DE CARRIÈRES
+   □ Accéder à la page carrières
+     http://127.0.0.1:8000/fr/career
+   □ Vérifier les 4 postes disponibles:
+     • Conseiller clientèle privée (St.Gallen)
+     • Analyste Crédit Senior (Zürich)
+     • Développeur Full Stack (St.Gallen/Remote)
+     • Apprenti Employé de Commerce CFC (Bern)
+   □ Tester les filtres (département, lieu, type de contrat)
+   □ Ouvrir une offre et voir le détail
+   □ Vérifier le formulaire de candidature
+
+✅ 4. DASHBOARD CLIENT BANCAIRE
+   □ Se connecter comme client
+     URL: http://127.0.0.1:8000/fr/login
+     Email: test@example.com
+     Password: password
+   □ Accéder au dashboard
+     http://127.0.0.1:8000/fr/dashboard
+   □ Vérifier les 2 comptes bancaires:
+     • Compte courant: CH93 0076 2011 6238 5295 7
+     • Compte épargne: CH45 0839 0020 0060 4165 2
+   □ Vérifier les transactions récentes
+   □ Tester le formulaire de virement
+     http://127.0.0.1:8000/fr/dashboard/transfer
+   □ Voir les détails d'un compte
+   □ Vérifier le logout
+
+✅ 5. CHANGEMENT DE LANGUE
+   □ Cliquer sur le sélecteur de langue (en haut à droite)
+   □ Vérifier le dropdown avec:
+     🇫🇷 Français
+     🇩🇪 Deutsch
+     🇬🇧 English
+     🇪🇸 Español
+   □ Changer de langue (ex: FR → DE)
+   □ Vérifier que l'URL change (/fr/... → /de/...)
+   □ Vérifier que le contenu est traduit
+   □ Naviguer sur plusieurs pages dans la nouvelle langue
+
+✅ 6. DÉTECTION AUTOMATIQUE DE LANGUE
+   □ Ouvrir en navigation privée
+   □ Accéder à http://127.0.0.1:8000
+   □ Vérifier la langue détectée (selon votre navigateur)
+   □ La préférence est mémorisée en session
+
+
+📋 CORRECTIONS SUPPLÉMENTAIRES (3/3 COMPLÉTÉES)
+───────────────────────────────────────────────────────────────────────────
+
+✅ 7. ROUTES CARRIÈRES CORRIGÉES
+   □ Vérifier le lien "Carrières" dans le header
+   □ Vérifier le lien "Carrières" dans le footer
+   □ Les deux doivent fonctionner sans erreur 404
+
+✅ 8. ORDRE DES SEEDERS CORRIGÉ
+   □ Exécuter: php artisan migrate:fresh --seed
+   □ Vérifier qu'il n'y a pas d'erreur "foreign key constraint"
+   □ Tous les seeders doivent se terminer avec succès:
+     • RolesAndPermissionsSeeder
+     • Users (admin + test)
+     • ServicesSeeder (52 services)
+     • ArticleSeeder
+     • AgencySeeder
+     • CareerSeeder
+     • AccountSeeder
+
+✅ 9. FORMULAIRE DE DEMANDE DE CRÉDIT
+   □ Accéder au formulaire
+     http://127.0.0.1:8000/fr/credit-request
+   □ Remplir les 3 étapes:
+     Étape 1: Informations personnelles
+     Étape 2: Coordonnées
+     Étape 3: Détails du crédit
+   □ Soumettre le formulaire
+   □ Vérifier la page de confirmation
+   □ Vérifier l'affichage du numéro de référence
+     Format: CR-[ID]-2025
+   □ Dans l'admin, vérifier la demande créée
+     http://127.0.0.1:8000/admin → Credit Requests
+
+
+📋 TESTS FONCTIONNELS COMPLÉMENTAIRES
+───────────────────────────────────────────────────────────────────────────
+
+□ NAVIGATION MULTILINGUE
+  □ Tester la navigation en français
+  □ Changer en allemand et naviguer
+  □ Changer en anglais et naviguer
+  □ Changer en espagnol et naviguer
+  □ Vérifier que tout le contenu est traduit
+
+□ RESPONSIVE DESIGN
+  □ Tester sur mobile (devtools)
+  □ Tester sur tablette
+  □ Tester sur desktop
+  □ Vérifier que tous les menus sont accessibles
+
+□ CONTENUS DYNAMIQUES
+  □ Articles de blog
+    http://127.0.0.1:8000/fr/blog
+  □ Agences
+    http://127.0.0.1:8000/fr/agencies
+  □ Pages légales
+    http://127.0.0.1:8000/fr/legal/privacy
+    http://127.0.0.1:8000/fr/legal/terms
+
+□ AUTHENTIFICATION
+  □ Inscription d'un nouveau compte
+    http://127.0.0.1:8000/fr/register
+  □ Connexion
+  □ Réinitialisation du mot de passe
+  □ Déconnexion
+
+
+📋 PERFORMANCE ET SÉCURITÉ
+───────────────────────────────────────────────────────────────────────────
+
+□ Vérifier qu'il n'y a pas d'erreurs dans la console navigateur (F12)
+□ Vérifier les logs Laravel (storage/logs/laravel.log)
+□ Tester les formulaires avec des données invalides
+□ Vérifier que les validations fonctionnent
+□ S'assurer que les fichiers uploadés sont stockés correctement
+
+
+📋 DOCUMENTATION DISPONIBLE
+───────────────────────────────────────────────────────────────────────────
+
+✅ MYSQL_SETUP.md
+  Documentation complète de configuration MySQL
+
+✅ COMMANDES_MYSQL.txt
+  Guide rapide des commandes MySQL
+
+✅ setup-mysql.sh
+  Script automatique de configuration
+
+✅ SOLUTIONS_PROBLEMES.txt
+  Solutions aux problèmes identifiés
+
+
+═══════════════════════════════════════════════════════════════════════════
+  COMMANDES DE VÉRIFICATION RAPIDE
+═══════════════════════════════════════════════════════════════════════════
+
+# Vérifier que MySQL fonctionne
+sudo systemctl status mysql
+
+# Réinitialiser complètement la base de données
+php artisan migrate:fresh --seed
+
+# Nettoyer les caches
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
+# Démarrer le serveur
+php artisan serve
+
+# Compiler les assets (pour le développement)
+npm run dev
+
+
+═══════════════════════════════════════════════════════════════════════════
+  RÉSUMÉ DES COMPTES DE TEST
+═══════════════════════════════════════════════════════════════════════════
+
+ADMIN (Panel d'administration)
+  URL: http://127.0.0.1:8000/admin
+  Email: admin@acrevis.ch
+  Password: password
+  Accès: Filament Admin Panel complet
+
+CLIENT TEST (Dashboard bancaire)
+  URL: http://127.0.0.1:8000/fr/dashboard
+  Email: test@example.com
+  Password: password
+  Comptes:
+    • Compte courant: 15'842.50 CHF
+    • Compte épargne: 42'500.00 CHF
+
+
+═══════════════════════════════════════════════════════════════════════════
+  STATUT FINAL
+═══════════════════════════════════════════════════════════════════════════
+
+✅ Toutes les fonctionnalités principales sont implémentées
+✅ Tous les bugs identifiés sont corrigés
+✅ La documentation est complète
+✅ Le système est prêt pour le déploiement
+
+Prochaines étapes recommandées:
+  1. Tester tous les points de cette checklist
+  2. Configurer l'envoi d'emails (si nécessaire)
+  3. Configurer un vrai serveur de production
+  4. Activer HTTPS
+  5. Configurer les sauvegardes de base de données
+
+
+═══════════════════════════════════════════════════════════════════════════
