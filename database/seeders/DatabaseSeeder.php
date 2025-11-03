@@ -39,6 +39,11 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole('Admin');
         }
 
+        // Seed accounts and transactions for test user
+        $this->call([
+            AccountSeeder::class,
+        ]);
+
         $this->command->info('✅ Admin user created:');
         $this->command->info('   Email: admin@acrevis.ch');
         $this->command->info('   Password: password (default factory password)');

@@ -74,6 +74,11 @@ class User extends Authenticatable
         return $this->hasMany(Article::class, 'author_id');
     }
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
     // Filament panel access
     public function canAccessPanel(\Filament\Panel $panel): bool
     {

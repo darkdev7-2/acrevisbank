@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SetLocale;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\DashboardController;
 
 // Redirect root to default locale
 Route::get('/', function () {
@@ -127,6 +128,19 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
     Route::get('/contact', function () {
         return view('pages.contact');
     })->name('contact');
+
+    // Dashboard (Customer Area) - Protected by auth middleware
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
+        Route::get('/account/{id}', [DashboardController::class, 'account'])->name('account');
+        Route::get('/transfer', [DashboardController::class, 'transfer'])->name('transfer');
+        Route::post('/transfer', [DashboardController::class, 'storeTransfer'])->name('transfer.store');
+    });
+
+    // Legacy dashboard route (redirect to new route)
+    Route::get('/dashboard', function ($locale) {
+        return redirect()->route('dashboard.index', ['locale' => $locale]);
+    })->name('dashboard');
 
     // Legal pages
     Route::prefix('legal')->name('legal.')->group(function () {
