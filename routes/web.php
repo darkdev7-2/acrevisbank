@@ -6,9 +6,10 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
 
-// Redirect root to default locale
+// Redirect root to detected or default locale
 Route::get('/', function () {
-    return redirect()->route('home', ['locale' => config('app.locale', 'fr')]);
+    $locale = session('locale', config('app.locale', 'fr'));
+    return redirect()->route('home', ['locale' => $locale]);
 });
 
 // Locale switch routes

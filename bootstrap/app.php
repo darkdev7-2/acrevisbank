@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Add locale detection middleware to web group
+        $middleware->web(append: [
+            \App\Http\Middleware\DetectPreferredLocale::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
