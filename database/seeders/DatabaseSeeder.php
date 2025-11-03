@@ -13,21 +13,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed roles and permissions first
+        // 1. Seed roles and permissions FIRST
         $this->call([
             RolesAndPermissionsSeeder::class,
-            ServicesSeeder::class,
-            ArticleSeeder::class,
-            AgencySeeder::class,
-            CareerSeeder::class,
         ]);
 
+        // 2. Create users BEFORE other seeders that need author_id
         // Create a test user (only if doesn't exist)
         if (!User::where('email', 'test@example.com')->exists()) {
-            User::factory()->create([
+            $testUser = User::factory()->create([
                 'name' => 'Test User',
                 'email' => 'test@example.com',
             ]);
+            $testUser->assignRole('Customer');
         }
 
         // Create admin user (only if doesn't exist)
@@ -39,13 +37,24 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole('Admin');
         }
 
-        // Seed accounts and transactions for test user
+        // 3. Now seed content that needs author_id
         $this->call([
+            ServicesSeeder::class,
+            ArticleSeeder::class,
+            AgencySeeder::class,
+            CareerSeeder::class,
             AccountSeeder::class,
         ]);
 
-        $this->command->info('✅ Admin user created:');
+        $this->command->info('');
+        $this->command->info('✅ Base de données initialisée avec succès!');
+        $this->command->info('');
+        $this->command->info('👨‍💼 ADMIN:');
         $this->command->info('   Email: admin@acrevis.ch');
-        $this->command->info('   Password: password (default factory password)');
+        $this->command->info('   Password: password');
+        $this->command->info('');
+        $this->command->info('👤 CLIENT TEST:');
+        $this->command->info('   Email: test@example.com');
+        $this->command->info('   Password: password');
     }
 }
