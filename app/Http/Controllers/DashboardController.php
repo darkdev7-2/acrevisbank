@@ -52,11 +52,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $accounts = $user->accounts()->where('is_active', true)->get();
+        $beneficiaries = $user->beneficiaries()->orderBy('name')->get();
 
-        return view('pages.dashboard.transfer', compact('accounts'));
+        return view('pages.dashboard.transfer', compact('accounts', 'beneficiaries'));
     }
 
-    public function storeTransfer(Request $request)
+    public function confirmTransfer(Request $request)
     {
         $validated = $request->validate([
             'from_account' => 'required|exists:accounts,id',
@@ -73,23 +74,60 @@ class DashboardController extends Controller
 
         // Check if sufficient balance
         if ($account->available_balance < $validated['amount']) {
-            return back()->withErrors(['amount' => 'Solde insuffisant']);
+            return back()->withErrors(['amount' => 'Solde insuffisant'])->withInput();
+        }
+
+        // Store transfer data in session
+        session()->put('pending_transfer', [
+            'account' => $account->toArray(),
+            'recipient_iban' => $validated['recipient_iban'],
+            'recipient_name' => $validated['recipient_name'],
+            'amount' => $validated['amount'],
+            'description' => $validated['description'],
+        ]);
+
+        return view('pages.dashboard.transfer-confirm', [
+            'account' => $account,
+            'transferData' => session('pending_transfer'),
+        ]);
+    }
+
+    public function executeTransfer(Request $request)
+    {
+        $transferData = session('pending_transfer');
+
+        if (!$transferData) {
+            return redirect()->route('dashboard.transfer', ['locale' => app()->getLocale()])
+                ->withErrors(['error' => 'Session expirée. Veuillez recommencer.']);
+        }
+
+        $user = Auth::user();
+        $account = Account::where('id', $transferData['account']['id'])
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        // Check if sufficient balance again (security check)
+        if ($account->available_balance < $transferData['amount']) {
+            session()->forget('pending_transfer');
+            return redirect()->route('dashboard.transfer', ['locale' => app()->getLocale()])
+                ->withErrors(['amount' => 'Solde insuffisant']);
         }
 
         // Create debit transaction
-        $newBalance = $account->balance - $validated['amount'];
+        $newBalance = $account->balance - $transferData['amount'];
+        $reference = 'TRF-' . strtoupper(uniqid()) . '-' . date('Y');
 
-        Transaction::create([
+        $transaction = Transaction::create([
             'account_id' => $account->id,
             'type' => 'debit',
             'category' => 'transfer',
-            'amount' => $validated['amount'],
+            'amount' => $transferData['amount'],
             'currency' => $account->currency,
             'balance_after' => $newBalance,
-            'recipient_name' => $validated['recipient_name'],
-            'recipient_iban' => $validated['recipient_iban'],
-            'description' => $validated['description'],
-            'reference' => 'REF' . rand(100000, 999999),
+            'recipient_name' => $transferData['recipient_name'],
+            'recipient_iban' => $transferData['recipient_iban'],
+            'description' => $transferData['description'],
+            'reference' => $reference,
             'status' => 'completed',
             'transaction_date' => Carbon::now(),
         ]);
@@ -100,7 +138,13 @@ class DashboardController extends Controller
             'available_balance' => $newBalance,
         ]);
 
-        return redirect()->route('dashboard', ['locale' => app()->getLocale()])
+        // Clear session
+        session()->forget('pending_transfer');
+
+        // Store transaction ID for receipt
+        session()->flash('transfer_success', $transaction->id);
+
+        return redirect()->route('dashboard.index', ['locale' => app()->getLocale()])
             ->with('success', 'Transfert effectué avec succès');
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BeneficiaryController;
 
 // Redirect root to detected or default locale
 Route::get('/', function () {
@@ -157,7 +158,19 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
         Route::get('/account/{id}', [DashboardController::class, 'account'])->name('account');
         Route::get('/transfer', [DashboardController::class, 'transfer'])->name('transfer');
-        Route::post('/transfer', [DashboardController::class, 'storeTransfer'])->name('transfer.store');
+        Route::post('/transfer/confirm', [DashboardController::class, 'confirmTransfer'])->name('transfer.confirm');
+        Route::post('/transfer/execute', [DashboardController::class, 'executeTransfer'])->name('transfer.execute');
+
+        // Beneficiaries management
+        Route::prefix('beneficiaries')->name('beneficiaries.')->group(function () {
+            Route::get('/', [BeneficiaryController::class, 'index'])->name('index');
+            Route::get('/create', [BeneficiaryController::class, 'create'])->name('create');
+            Route::post('/', [BeneficiaryController::class, 'store'])->name('store');
+            Route::get('/{id}', [BeneficiaryController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [BeneficiaryController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [BeneficiaryController::class, 'update'])->name('update');
+            Route::delete('/{id}', [BeneficiaryController::class, 'destroy'])->name('destroy');
+        });
     });
 
     // Legacy dashboard route (redirect to new route)

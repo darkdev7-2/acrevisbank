@@ -97,7 +97,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('dashboard.transfer.store', ['locale' => $currentLocale]) }}" class="space-y-6" x-data="transferForm()">
+                <form method="POST" action="{{ route('dashboard.transfer.confirm', ['locale' => $currentLocale]) }}" class="space-y-6" x-data="transferForm()">
                     @csrf
 
                     <!-- From Account -->
@@ -121,12 +121,65 @@
                         </template>
                     </div>
 
+                    <!-- Beneficiary Selector -->
+                    @if($beneficiaries->count() > 0)
+                        <div>
+                            <label for="beneficiary" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ $currentLocale === 'fr' ? 'Sélectionner un bénéficiaire (optionnel)' :
+                                   ($currentLocale === 'de' ? 'Begünstigten auswählen (optional)' :
+                                   ($currentLocale === 'en' ? 'Select a beneficiary (optional)' : 'Seleccionar beneficiario (opcional)')) }}
+                            </label>
+                            <select id="beneficiary" x-model="selectedBeneficiary" @change="fillBeneficiary()"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
+                                <option value="">{{ $currentLocale === 'fr' ? 'Saisir manuellement' :
+                                   ($currentLocale === 'de' ? 'Manuell eingeben' :
+                                   ($currentLocale === 'en' ? 'Enter manually' : 'Ingresar manualmente')) }}</option>
+                                @foreach($beneficiaries as $beneficiary)
+                                    <option value="{{ $beneficiary->id }}"
+                                            data-iban="{{ trim($beneficiary->formatted_iban) }}"
+                                            data-name="{{ $beneficiary->name }}">
+                                        {{ $beneficiary->name }}{{ $beneficiary->is_favorite ? ' ⭐' : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <a href="{{ route('dashboard.beneficiaries.index', ['locale' => $currentLocale]) }}" class="mt-2 text-sm text-pink-600 hover:text-pink-700 inline-flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                {{ $currentLocale === 'fr' ? 'Gérer mes bénéficiaires' :
+                                   ($currentLocale === 'de' ? 'Begünstigte verwalten' :
+                                   ($currentLocale === 'en' ? 'Manage beneficiaries' : 'Gestionar beneficiarios')) }}
+                            </a>
+                        </div>
+                    @else
+                        <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                            <div class="flex">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-700">
+                                        {{ $currentLocale === 'fr' ? 'Astuce : Enregistrez vos bénéficiaires fréquents pour gagner du temps lors de vos prochains virements.' :
+                                           ($currentLocale === 'de' ? 'Tipp: Speichern Sie Ihre häufigen Empfänger, um bei Ihren nächsten Überweisungen Zeit zu sparen.' :
+                                           ($currentLocale === 'en' ? 'Tip: Save your frequent recipients to save time on your next transfers.' : 'Consejo: Guarde sus destinatarios frecuentes para ahorrar tiempo en sus próximas transferencias.')) }}
+                                    </p>
+                                    <a href="{{ route('dashboard.beneficiaries.create', ['locale' => $currentLocale]) }}" class="mt-2 text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center">
+                                        {{ $currentLocale === 'fr' ? 'Ajouter un bénéficiaire' :
+                                           ($currentLocale === 'de' ? 'Begünstigten hinzufügen' :
+                                           ($currentLocale === 'en' ? 'Add a beneficiary' : 'Agregar beneficiario')) }} →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Recipient IBAN -->
                     <div>
                         <label for="recipient_iban" class="block text-sm font-medium text-gray-700 mb-2">
                             {{ $t['recipient_iban'] }} <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="recipient_iban" name="recipient_iban" required
+                        <input type="text" id="recipient_iban" name="recipient_iban" required x-model="recipientIban"
                                placeholder="CH12 3456 7890 1234 5678 9"
                                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500 font-mono">
                         <p class="mt-1 text-xs text-gray-500">{{ $t['iban_help'] }}</p>
@@ -137,7 +190,7 @@
                         <label for="recipient_name" class="block text-sm font-medium text-gray-700 mb-2">
                             {{ $t['recipient_name'] }} <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="recipient_name" name="recipient_name" required
+                        <input type="text" id="recipient_name" name="recipient_name" required x-model="recipientName"
                                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
                     </div>
 
@@ -196,6 +249,9 @@
         function transferForm() {
             return {
                 selectedAccount: '',
+                selectedBeneficiary: '',
+                recipientIban: '',
+                recipientName: '',
                 amount: '',
                 availableBalance: 0,
                 init() {
@@ -208,6 +264,14 @@
                             this.availableBalance = 0;
                         }
                     });
+                },
+                fillBeneficiary() {
+                    if (this.selectedBeneficiary) {
+                        const select = document.getElementById('beneficiary');
+                        const option = select.options[select.selectedIndex];
+                        this.recipientIban = option.dataset.iban || '';
+                        this.recipientName = option.dataset.name || '';
+                    }
                 },
                 formatBalance(balance) {
                     return new Intl.NumberFormat('fr-CH', {
