@@ -21,11 +21,17 @@ class LoginResponse implements LoginResponseContract
         // Check if user is admin or customer
         $user = auth()->user();
 
-        if ($user->hasRole('Admin')) {
-            // Redirect admins to Filament admin panel
-            return $request->wantsJson()
-                ? new JsonResponse('', 204)
-                : redirect()->intended('/admin');
+        // Check if user has Admin role (safely handle if roles are not set up)
+        try {
+            if (method_exists($user, 'hasRole') && $user->hasRole('Admin')) {
+                // Redirect admins to Filament admin panel
+                return $request->wantsJson()
+                    ? new JsonResponse('', 204)
+                    : redirect()->intended('/admin');
+            }
+        } catch (\Exception $e) {
+            // If there's any issue with roles, continue to customer dashboard
+            \Log::warning('Role check failed in LoginResponse', ['error' => $e->getMessage()]);
         }
 
         // Redirect customers to their dashboard with locale
