@@ -179,11 +179,6 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         });
     });
 
-    // Legacy dashboard route (redirect to new route)
-    Route::get('/dashboard', function ($locale) {
-        return redirect()->route('dashboard.index', ['locale' => $locale]);
-    })->name('dashboard');
-
     // Legal pages
     Route::prefix('legal')->name('legal.')->group(function () {
         Route::get('/privacy', function () {
