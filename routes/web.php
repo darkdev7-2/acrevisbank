@@ -15,6 +15,28 @@ Route::get('/', function () {
 Route::get('/locale/{locale}', function ($locale) {
     if (in_array($locale, ['fr', 'de', 'en', 'es'])) {
         session()->put('locale', $locale);
+
+        // Get the current URL path
+        $previousUrl = url()->previous();
+        $parsedUrl = parse_url($previousUrl);
+        $path = $parsedUrl['path'] ?? '/';
+
+        // Extract the current locale from the path (e.g., /fr/services -> /de/services)
+        $supportedLocales = ['fr', 'de', 'en', 'es'];
+        foreach ($supportedLocales as $currentLocale) {
+            if (str_starts_with($path, '/' . $currentLocale . '/') || $path === '/' . $currentLocale) {
+                // Replace the locale in the path
+                $path = preg_replace('#^/' . $currentLocale . '(/|$)#', '/' . $locale . '$1', $path);
+                break;
+            }
+        }
+
+        // If no locale was found in the path, prepend the new locale
+        if (!str_starts_with($path, '/' . $locale)) {
+            $path = '/' . $locale . ($path === '/' ? '' : $path);
+        }
+
+        return redirect($path);
     }
     return redirect()->back();
 })->name('locale.switch');
