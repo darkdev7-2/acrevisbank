@@ -39,6 +39,9 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'validation_status' => 'pending', // Account pending admin validation
+            'terms_accepted' => true,
+            'terms_accepted_at' => now(),
         ]);
 
         // Assign default Customer role to new users

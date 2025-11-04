@@ -29,10 +29,33 @@ class User extends Authenticatable
         'country',
         'city',
         'address',
+        'postal_code',
+        'street',
         'preferred_language',
         'account_type',
         'customer_segment',
         'birth_date',
+        'birth_place',
+        'nationality',
+        'profession',
+        'employer',
+        'annual_income',
+        'funds_source',
+        'id_document_type',
+        'id_document_number',
+        'id_document_path',
+        'id_document_expiry',
+        'validation_status',
+        'validated_at',
+        'validated_by',
+        'rejection_reason',
+        'politically_exposed',
+        'tax_residence_country',
+        'tax_identification_number',
+        'terms_accepted',
+        'terms_accepted_at',
+        'marketing_consent',
+        'marketing_consent_at',
         'is_active',
         'last_login_at',
     ];
@@ -58,8 +81,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'birth_date' => 'date',
+            'id_document_expiry' => 'date',
             'last_login_at' => 'datetime',
+            'validated_at' => 'datetime',
+            'terms_accepted_at' => 'datetime',
+            'marketing_consent_at' => 'datetime',
             'is_active' => 'boolean',
+            'terms_accepted' => 'boolean',
+            'marketing_consent' => 'boolean',
+            'politically_exposed' => 'boolean',
+            'annual_income' => 'decimal:2',
         ];
     }
 
@@ -82,6 +113,11 @@ class User extends Authenticatable
     public function beneficiaries()
     {
         return $this->hasMany(Beneficiary::class);
+    }
+
+    public function validator()
+    {
+        return $this->belongsTo(User::class, 'validated_by');
     }
 
     // Filament panel access
