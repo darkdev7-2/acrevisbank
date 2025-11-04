@@ -3,10 +3,14 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Mail\WelcomeEmail;
+use App\Mail\NewRegistrationAdminEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Spatie\Permission\Models\Role;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -39,6 +43,15 @@ class CreateNewUser implements CreatesNewUsers
 
         // Assign default Customer role to new users
         $user->assignRole('Customer');
+
+        // Send welcome email to the new user
+        Mail::to($user->email)->send(new WelcomeEmail($user));
+
+        // Send notification to all admins
+        $admins = User::role('Admin')->get();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new NewRegistrationAdminEmail($user));
+        }
 
         return $user;
     }

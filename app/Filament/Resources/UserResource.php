@@ -180,6 +180,15 @@ class UserResource extends Resource
                     ->boolean()
                     ->sortable(),
 
+                Tables\Columns\IconColumn::make('has_account')
+                    ->label('Compte Bancaire')
+                    ->boolean()
+                    ->getStateUsing(fn (User $record): bool => $record->accounts()->count() > 0)
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Créé le')
                     ->dateTime('d/m/Y H:i')
@@ -212,10 +221,89 @@ class UserResource extends Resource
                     ->placeholder('Tous')
                     ->trueLabel('Actifs uniquement')
                     ->falseLabel('Inactifs uniquement'),
+
+                Tables\Filters\Filter::make('has_bank_account')
+                    ->label('Compte bancaire')
+                    ->query(fn (Builder $query): Builder => $query->has('accounts'))
+                    ->toggle(),
+
+                Tables\Filters\Filter::make('no_bank_account')
+                    ->label('Sans compte bancaire')
+                    ->query(fn (Builder $query): Builder => $query->doesntHave('accounts'))
+                    ->toggle(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('create_account')
+                    ->label('Créer Compte Bancaire')
+                    ->icon('heroicon-o-plus-circle')
+                    ->color('success')
+                    ->visible(fn (User $record): bool => $record->accounts()->count() === 0)
+                    ->form([
+                        Forms\Components\Select::make('account_type')
+                            ->label('Type de Compte')
+                            ->options([
+                                'Compte Courant' => 'Compte Courant',
+                                'Compte Épargne' => 'Compte Épargne',
+                                'Compte Joint' => 'Compte Joint',
+                                'Compte Entreprise' => 'Compte Entreprise',
+                            ])
+                            ->required()
+                            ->default('Compte Courant'),
+
+                        Forms\Components\Select::make('currency')
+                            ->label('Devise')
+                            ->options([
+                                'CHF' => 'CHF (Franc Suisse)',
+                                'EUR' => 'EUR (Euro)',
+                                'USD' => 'USD (Dollar US)',
+                                'GBP' => 'GBP (Livre Sterling)',
+                            ])
+                            ->required()
+                            ->default('CHF'),
+
+                        Forms\Components\TextInput::make('initial_balance')
+                            ->label('Solde Initial')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->suffix('CHF'),
+                    ])
+                    ->action(function (User $record, array $data) {
+                        // Generate IBAN
+                        $iban = \App\Services\IbanGenerator::generate();
+
+                        // Generate account number
+                        $accountNumber = 'ACC-' . strtoupper(substr(uniqid(), -10));
+
+                        // Create account
+                        $account = $record->accounts()->create([
+                            'account_number' => $accountNumber,
+                            'iban' => $iban,
+                            'account_type' => $data['account_type'],
+                            'currency' => $data['currency'],
+                            'balance' => $data['initial_balance'] ?? 0,
+                            'available_balance' => $data['initial_balance'] ?? 0,
+                            'is_active' => true,
+                            'opened_at' => now(),
+                        ]);
+
+                        // Send email notification
+                        \Illuminate\Support\Facades\Mail::to($record->email)
+                            ->send(new \App\Mail\AccountCreatedEmail($account));
+
+                        // Show success notification
+                        \Filament\Notifications\Notification::make()
+                            ->success()
+                            ->title('Compte bancaire créé')
+                            ->body("Le compte {$accountNumber} a été créé avec succès. IBAN: {$iban}")
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Créer un compte bancaire')
+                    ->modalDescription('Créer un nouveau compte bancaire pour ce client. Un IBAN sera généré automatiquement.')
+                    ->modalSubmitActionLabel('Créer le compte'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
