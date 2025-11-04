@@ -32,6 +32,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->brandName('Acrevis Bank - Admin')
             ->favicon(asset('favicon.ico'))
+            ->navigationGroups([
+                'Gestion Clients',
+                'Opérations Bancaires',
+                'Contenu du Site',
+                'Gestion Banque',
+                'Communication',
+                'Système',
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -55,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->sidebarCollapsibleOnDesktop();
     }
 }

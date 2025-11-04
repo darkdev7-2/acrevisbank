@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\DB;
 class NewsletterSubscriberResource extends Resource
 {
     protected static ?string $model = null;
-    protected static ?string $navigationIcon = 'heroicon-o-envelope';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
+
+    protected static ?string $navigationGroup = 'Communication';
+
     protected static ?string $navigationLabel = 'Newsletter';
     protected static ?string $modelLabel = 'Abonné Newsletter';
     protected static ?string $pluralModelLabel = 'Abonnés Newsletter';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
     {

@@ -18,10 +18,13 @@ class CreditRequestResource extends Resource
     protected static ?string $model = CreditRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
+    protected static ?string $navigationGroup = 'Opérations Bancaires';
+
     protected static ?string $navigationLabel = 'Demandes de Crédit';
     protected static ?string $modelLabel = 'Demande de Crédit';
     protected static ?string $pluralModelLabel = 'Demandes de Crédit';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

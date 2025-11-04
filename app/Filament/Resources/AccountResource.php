@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AgencyResource\Pages;
-use App\Filament\Resources\AgencyResource\RelationManagers;
-use App\Models\Agency;
+use App\Filament\Resources\AccountResource\Pages;
+use App\Filament\Resources\AccountResource\RelationManagers;
+use App\Models\Account;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,15 +13,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AgencyResource extends Resource
+class AccountResource extends Resource
 {
-    protected static ?string $model = Agency::class;
+    protected static ?string $model = Account::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
-
-    protected static ?string $navigationGroup = 'Gestion Banque';
-
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -60,9 +56,9 @@ class AgencyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAgencies::route('/'),
-            'create' => Pages\CreateAgency::route('/create'),
-            'edit' => Pages\EditAgency::route('/{record}/edit'),
+            'index' => Pages\ListAccounts::route('/'),
+            'create' => Pages\CreateAccount::route('/create'),
+            'edit' => Pages\EditAccount::route('/{record}/edit'),
         ];
     }
 }

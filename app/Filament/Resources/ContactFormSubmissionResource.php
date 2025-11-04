@@ -17,7 +17,11 @@ class ContactFormSubmissionResource extends Resource
 {
     protected static ?string $model = ContactFormSubmission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope';
+
+    protected static ?string $navigationGroup = 'Communication';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
