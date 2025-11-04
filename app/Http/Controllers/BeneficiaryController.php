@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class BeneficiaryController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Display a listing of beneficiaries
      */

@@ -155,7 +155,7 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
     })->name('contact');
 
     // Dashboard (Customer Area) - Protected by auth middleware
-    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
         Route::get('/account/{id}', [DashboardController::class, 'account'])->name('account');
         Route::get('/transfer', [DashboardController::class, 'transfer'])->name('transfer');
