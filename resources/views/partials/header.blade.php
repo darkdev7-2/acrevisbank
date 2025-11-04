@@ -28,11 +28,11 @@
 
                 <!-- Segment Switch -->
                 <div class="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
-                    <a href="{{ route('segment.switch', ['segment' => 'privat', 'locale' => $currentLocale]) }}"
+                    <a href="{{ route('segment.switch', ['segment' => 'privat']) }}"
                        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {{ $currentSegment === 'privat' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
                         {{ $translations['privat'][$currentLocale] }}
                     </a>
-                    <a href="{{ route('segment.switch', ['segment' => 'business', 'locale' => $currentLocale]) }}"
+                    <a href="{{ route('segment.switch', ['segment' => 'business']) }}"
                        class="px-4 py-2 rounded-md text-sm font-medium transition-colors {{ $currentSegment === 'business' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
                         {{ $translations['business'][$currentLocale] }}
                     </a>
