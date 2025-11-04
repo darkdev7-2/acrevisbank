@@ -94,6 +94,124 @@ class UserResource extends Resource
                     ])
                     ->columns(2),
 
+                Forms\Components\Section::make('Informations KYC')
+                    ->schema([
+                        Forms\Components\TextInput::make('nationality')
+                            ->label('Nationalité')
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('birth_place')
+                            ->label('Lieu de naissance')
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('postal_code')
+                            ->label('Code postal')
+                            ->maxLength(10),
+
+                        Forms\Components\TextInput::make('street')
+                            ->label('Rue')
+                            ->maxLength(255),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Informations Professionnelles')
+                    ->schema([
+                        Forms\Components\TextInput::make('profession')
+                            ->label('Profession')
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('employer')
+                            ->label('Employeur')
+                            ->maxLength(255),
+
+                        Forms\Components\TextInput::make('annual_income')
+                            ->label('Revenu annuel')
+                            ->numeric()
+                            ->prefix('CHF'),
+
+                        Forms\Components\Select::make('funds_source')
+                            ->label('Source des fonds')
+                            ->options([
+                                'Salaire' => 'Salaire',
+                                'Épargne' => 'Épargne',
+                                'Héritage' => 'Héritage',
+                                'Investissements' => 'Investissements',
+                                'Revenus locatifs' => 'Revenus locatifs',
+                                'Autre' => 'Autre',
+                            ]),
+
+                        Forms\Components\Toggle::make('politically_exposed')
+                            ->label('Personne politiquement exposée'),
+
+                        Forms\Components\TextInput::make('tax_residence_country')
+                            ->label('Pays de résidence fiscale')
+                            ->maxLength(100),
+
+                        Forms\Components\TextInput::make('tax_identification_number')
+                            ->label('Numéro d\'identification fiscale')
+                            ->maxLength(255),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Documents d\'Identité')
+                    ->schema([
+                        Forms\Components\Select::make('id_document_type')
+                            ->label('Type de document')
+                            ->options([
+                                'passport' => 'Passeport',
+                                'id_card' => 'Carte d\'identité',
+                                'residence_permit' => 'Permis de séjour',
+                            ]),
+
+                        Forms\Components\TextInput::make('id_document_number')
+                            ->label('Numéro du document')
+                            ->maxLength(255),
+
+                        Forms\Components\DatePicker::make('id_document_expiry')
+                            ->label('Date d\'expiration'),
+
+                        Forms\Components\TextInput::make('id_document_path')
+                            ->label('Chemin du document')
+                            ->disabled()
+                            ->helperText('Le document est stocké de manière sécurisée'),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Statut de Validation')
+                    ->schema([
+                        Forms\Components\Select::make('validation_status')
+                            ->label('Statut de validation')
+                            ->options([
+                                'pending' => 'En attente',
+                                'validated' => 'Validé',
+                                'rejected' => 'Rejeté',
+                            ])
+                            ->default('pending')
+                            ->disabled()
+                            ->dehydrated(false),
+
+                        Forms\Components\DateTimePicker::make('validated_at')
+                            ->label('Validé le')
+                            ->disabled(),
+
+                        Forms\Components\Select::make('validated_by')
+                            ->label('Validé par')
+                            ->relationship('validator', 'name')
+                            ->disabled(),
+
+                        Forms\Components\Textarea::make('rejection_reason')
+                            ->label('Raison du rejet')
+                            ->rows(3)
+                            ->columnSpanFull()
+                            ->visible(fn ($record) => $record?->validation_status === 'rejected'),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->visibleOn('edit'),
+
                 Forms\Components\Section::make('Préférences')
                     ->schema([
                         Forms\Components\Select::make('preferred_language')
@@ -188,6 +306,21 @@ class UserResource extends Resource
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger'),
+
+                Tables\Columns\BadgeColumn::make('validation_status')
+                    ->label('Statut KYC')
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'validated',
+                        'danger' => 'rejected',
+                    ])
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pending' => 'En attente',
+                        'validated' => 'Validé',
+                        'rejected' => 'Rejeté',
+                        default => $state,
+                    })
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Créé le')
