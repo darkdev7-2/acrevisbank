@@ -194,3 +194,9 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         })->name('impressum');
     });
 });
+
+// Authentication routes (outside locale group for simplicity)
+Route::get('/register-account', \App\Livewire\MultiStepRegistration::class)->name('auth.register-multistep');
+Route::get('/pending-validation', function () {
+    return view('pages.auth.pending-validation');
+})->name('auth.pending-validation');
