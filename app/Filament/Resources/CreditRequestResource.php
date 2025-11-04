@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CreditRequestResource\Pages;
 use App\Models\CreditRequest;
 use App\Models\User;
+use App\Mail\CreditRequestApproved;
+use App\Mail\CreditRequestRejected;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class CreditRequestResource extends Resource
 {
@@ -255,8 +258,12 @@ class CreditRequestResource extends Resource
                             'reviewed_at' => now(),
                         ]);
 
+                        // Send approval email
+                        Mail::to($record->email)->send(new CreditRequestApproved($record));
+
                         Notification::make()
                             ->title('Demande approuvée')
+                            ->body('Un email de confirmation a été envoyé au client.')
                             ->success()
                             ->send();
                     }),
@@ -268,21 +275,26 @@ class CreditRequestResource extends Resource
                     ->visible(fn ($record) => $record->status !== 'rejected')
                     ->requiresConfirmation()
                     ->form([
-                        Forms\Components\Textarea::make('review_notes')
-                            ->label('Raison du rejet')
+                        Forms\Components\Textarea::make('admin_notes')
+                            ->label('Raison du rejet (visible par le client)')
                             ->required()
-                            ->maxLength(2000),
+                            ->maxLength(2000)
+                            ->helperText('Ce message sera envoyé au client par email'),
                     ])
                     ->action(function (CreditRequest $record, array $data) {
                         $record->update([
                             'status' => 'rejected',
                             'reviewed_by' => auth()->id(),
                             'reviewed_at' => now(),
-                            'review_notes' => $data['review_notes'],
+                            'admin_notes' => $data['admin_notes'],
                         ]);
+
+                        // Send rejection email
+                        Mail::to($record->email)->send(new CreditRequestRejected($record));
 
                         Notification::make()
                             ->title('Demande rejetée')
+                            ->body('Un email d\'information a été envoyé au client.')
                             ->danger()
                             ->send();
                     }),

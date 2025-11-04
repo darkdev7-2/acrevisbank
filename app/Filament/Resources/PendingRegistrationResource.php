@@ -6,6 +6,7 @@ use App\Filament\Resources\PendingRegistrationResource\Pages;
 use App\Models\User;
 use App\Models\Account;
 use App\Mail\AccountCreatedEmail;
+use App\Mail\RegistrationRejected;
 use App\Services\IbanGenerator;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -339,10 +340,11 @@ class PendingRegistrationResource extends Resource
                     ->color('danger')
                     ->form([
                         Forms\Components\Textarea::make('rejection_reason')
-                            ->label('Motif du rejet')
+                            ->label('Motif du rejet (visible par le client)')
                             ->required()
                             ->rows(3)
-                            ->placeholder('Expliquez la raison du rejet...'),
+                            ->placeholder('Expliquez la raison du rejet...')
+                            ->helperText('Ce message sera envoyé au client par email'),
                     ])
                     ->action(function (User $record, array $data) {
                         $record->update([
@@ -352,15 +354,18 @@ class PendingRegistrationResource extends Resource
                             'rejection_reason' => $data['rejection_reason'],
                         ]);
 
+                        // Send rejection email
+                        Mail::to($record->email)->send(new RegistrationRejected($record, $data['rejection_reason']));
+
                         Notification::make()
                             ->warning()
                             ->title('Inscription rejetée')
-                            ->body("L'inscription de {$record->first_name} {$record->last_name} a été rejetée.")
+                            ->body("L'inscription de {$record->first_name} {$record->last_name} a été rejetée. Un email a été envoyé au client.")
                             ->send();
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Rejeter l\'inscription')
-                    ->modalDescription('Êtes-vous sûr de vouloir rejeter cette inscription ? Le client sera notifié.')
+                    ->modalDescription('Êtes-vous sûr de vouloir rejeter cette inscription ? Le client sera notifié par email.')
                     ->modalSubmitActionLabel('Rejeter l\'inscription'),
             ])
             ->bulkActions([
