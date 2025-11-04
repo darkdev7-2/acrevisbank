@@ -5,9 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
+    /**
+     * Run the database seeder.
+     */
     public function run(): void
     {
         // Reset cached roles and permissions
@@ -21,156 +25,97 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit users',
             'delete users',
 
-            // Credit requests management
+            // Account management
+            'view accounts',
+            'create accounts',
+            'edit accounts',
+            'delete accounts',
+            'activate accounts',
+            'deactivate accounts',
+
+            // Transaction management
+            'view transactions',
+            'create transactions',
+            'edit transactions',
+            'delete transactions',
+            'approve transactions',
+
+            // Beneficiary management
+            'view beneficiaries',
+            'create beneficiaries',
+            'edit beneficiaries',
+            'delete beneficiaries',
+
+            // Credit request management
             'view credit requests',
             'create credit requests',
             'edit credit requests',
             'delete credit requests',
             'approve credit requests',
             'reject credit requests',
-            'assign credit requests',
+
+            // Pending registration management
+            'view pending registrations',
+            'validate registrations',
+            'reject registrations',
+
+            // Contact form management
+            'view contact forms',
+            'delete contact forms',
+            'mark contact forms as read',
 
             // Newsletter management
             'view newsletter subscribers',
+            'edit newsletter subscribers',
             'delete newsletter subscribers',
             'export newsletter subscribers',
 
-            // Content management
-            'view articles',
-            'create articles',
-            'edit articles',
-            'delete articles',
-            'publish articles',
+            // Reports and analytics
+            'view reports',
+            'export reports',
+            'view dashboard',
 
-            'view services',
-            'create services',
-            'edit services',
-            'delete services',
-
-            'view pages',
-            'create pages',
-            'edit pages',
-            'delete pages',
-
-            // Agency management
-            'view agencies',
-            'create agencies',
-            'edit agencies',
-            'delete agencies',
-
-            // Contact submissions
-            'view contacts',
-            'delete contacts',
-
-            // Media management
-            'view media',
-            'upload media',
-            'delete media',
-
-            // Dashboard access
-            'access dashboard',
+            // Settings
+            'manage settings',
+            'view activity log',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Create roles and assign permissions
+        // Create Admin role with all permissions
+        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $adminRole->givePermissionTo(Permission::all());
 
-        // 1. Super Admin - All permissions
-        $superAdmin = Role::create(['name' => 'Super Admin']);
-        $superAdmin->givePermissionTo(Permission::all());
-
-        // 2. Admin - Most permissions except user deletion
-        $admin = Role::create(['name' => 'Admin']);
-        $admin->givePermissionTo([
-            'view users',
-            'create users',
-            'edit users',
-            'view credit requests',
+        // Create Customer role with limited permissions
+        $customerRole = Role::firstOrCreate(['name' => 'Customer']);
+        $customerRole->givePermissionTo([
+            'view accounts',
+            'view transactions',
+            'view beneficiaries',
+            'create beneficiaries',
+            'edit beneficiaries',
+            'delete beneficiaries',
             'create credit requests',
-            'edit credit requests',
-            'delete credit requests',
-            'approve credit requests',
-            'reject credit requests',
-            'assign credit requests',
-            'view newsletter subscribers',
-            'delete newsletter subscribers',
-            'export newsletter subscribers',
-            'view articles',
-            'create articles',
-            'edit articles',
-            'delete articles',
-            'publish articles',
-            'view services',
-            'create services',
-            'edit services',
-            'delete services',
-            'view pages',
-            'create pages',
-            'edit pages',
-            'delete pages',
-            'view agencies',
-            'create agencies',
-            'edit agencies',
-            'delete agencies',
-            'view contacts',
-            'delete contacts',
-            'view media',
-            'upload media',
-            'delete media',
-            'access dashboard',
-        ]);
-
-        // 3. Credit Manager - Credit and client focused
-        $creditManager = Role::create(['name' => 'Credit Manager']);
-        $creditManager->givePermissionTo([
-            'view users',
             'view credit requests',
-            'edit credit requests',
-            'approve credit requests',
-            'reject credit requests',
-            'assign credit requests',
-            'view contacts',
-            'access dashboard',
         ]);
 
-        // 4. Content Manager - Content focused
-        $contentManager = Role::create(['name' => 'Content Manager']);
-        $contentManager->givePermissionTo([
-            'view articles',
-            'create articles',
-            'edit articles',
-            'publish articles',
-            'view services',
-            'create services',
-            'edit services',
-            'view pages',
-            'create pages',
-            'edit pages',
-            'view agencies',
-            'create agencies',
-            'edit agencies',
-            'view newsletter subscribers',
-            'export newsletter subscribers',
-            'view media',
-            'upload media',
-            'access dashboard',
-        ]);
+        // Create a super admin user if doesn't exist
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@acrevisbank.ch'],
+            [
+                'first_name' => 'Super',
+                'last_name' => 'Admin',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+                'validation_status' => 'validated',
+                'validated_at' => now(),
+            ]
+        );
+        $admin->assignRole('Admin');
 
-        // 5. Customer - Basic client permissions
-        $customer = Role::create(['name' => 'Customer']);
-        $customer->givePermissionTo([
-            'create credit requests',
-        ]);
-
-        $this->command->info('Roles and permissions created successfully!');
-        $this->command->info('');
-        $this->command->info('Roles created:');
-        $this->command->info('1. Super Admin - Full access');
-        $this->command->info('2. Admin - Most permissions');
-        $this->command->info('3. Credit Manager - Credit and client management');
-        $this->command->info('4. Content Manager - Content and marketing management');
-        $this->command->info('5. Customer - Basic client access');
+        $this->command->info('Roles and permissions seeded successfully!');
+        $this->command->info('Admin user: admin@acrevisbank.ch / password: password');
     }
 }

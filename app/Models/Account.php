@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Account extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'user_id',
         'account_number',
@@ -51,5 +54,14 @@ class Account extends Model
     public function getFormattedBalanceAttribute(): string
     {
         return number_format($this->balance, 2, '.', "'") . ' ' . $this->currency;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['account_number', 'iban', 'balance', 'available_balance', 'is_active'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Account {$eventName}");
     }
 }

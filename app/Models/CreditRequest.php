@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class CreditRequest extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'user_id',
         'reference_number',
@@ -68,5 +71,14 @@ class CreditRequest extends Model
     public function scopeRejected($query)
     {
         return $query->where('status', 'rejected');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['reference_number', 'amount', 'status', 'admin_notes'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Credit request {$eventName}");
     }
 }

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Transaction extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'account_id',
         'type',
@@ -42,5 +45,14 @@ class Transaction extends Model
     {
         $sign = $this->type === 'debit' ? '-' : '+';
         return $sign . ' ' . number_format($this->amount, 2, '.', "'") . ' ' . $this->currency;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['transaction_number', 'type', 'amount', 'status', 'balance_after'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Transaction {$eventName}");
     }
 }
