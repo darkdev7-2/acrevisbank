@@ -3,17 +3,17 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NewsletterSubscriberResource\Pages;
+use App\Models\NewsletterSubscriber;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 class NewsletterSubscriberResource extends Resource
 {
-    protected static ?string $model = null;
+    protected static ?string $model = NewsletterSubscriber::class;
     protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
 
     protected static ?string $navigationGroup = 'Communication';
@@ -22,11 +22,6 @@ class NewsletterSubscriberResource extends Resource
     protected static ?string $modelLabel = 'Abonné Newsletter';
     protected static ?string $pluralModelLabel = 'Abonnés Newsletter';
     protected static ?int $navigationSort = 2;
-
-    public static function getEloquentQuery(): Builder
-    {
-        return DB::table('newsletter_subscribers')->selectRaw('*');
-    }
 
     public static function form(Form $form): Form
     {
@@ -47,7 +42,6 @@ class NewsletterSubscriberResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(DB::table('newsletter_subscribers'))
             ->columns([
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
@@ -93,9 +87,7 @@ class NewsletterSubscriberResource extends Resource
                     ->color('success')
                     ->visible(fn ($record) => !$record->is_active)
                     ->action(function ($record) {
-                        DB::table('newsletter_subscribers')
-                            ->where('id', $record->id)
-                            ->update(['is_active' => true, 'updated_at' => now()]);
+                        $record->update(['is_active' => true]);
                     })
                     ->requiresConfirmation(),
 
@@ -105,16 +97,13 @@ class NewsletterSubscriberResource extends Resource
                     ->color('danger')
                     ->visible(fn ($record) => $record->is_active)
                     ->action(function ($record) {
-                        DB::table('newsletter_subscribers')
-                            ->where('id', $record->id)
-                            ->update(['is_active' => false, 'updated_at' => now()]);
+                        $record->update(['is_active' => false]);
                     })
                     ->requiresConfirmation(),
 
-                Tables\Actions\DeleteAction::make()
-                    ->action(function ($record) {
-                        DB::table('newsletter_subscribers')->where('id', $record->id)->delete();
-                    }),
+                Tables\Actions\EditAction::make(),
+
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -153,10 +142,9 @@ class NewsletterSubscriberResource extends Resource
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->action(function ($records) {
-                            $ids = $records->pluck('id')->toArray();
-                            DB::table('newsletter_subscribers')
-                                ->whereIn('id', $ids)
-                                ->update(['is_active' => true, 'updated_at' => now()]);
+                            foreach ($records as $record) {
+                                $record->update(['is_active' => true]);
+                            }
                         })
                         ->deselectRecordsAfterCompletion(),
 
@@ -165,18 +153,13 @@ class NewsletterSubscriberResource extends Resource
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->action(function ($records) {
-                            $ids = $records->pluck('id')->toArray();
-                            DB::table('newsletter_subscribers')
-                                ->whereIn('id', $ids)
-                                ->update(['is_active' => false, 'updated_at' => now()]);
+                            foreach ($records as $record) {
+                                $record->update(['is_active' => false]);
+                            }
                         })
                         ->deselectRecordsAfterCompletion(),
 
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->action(function ($records) {
-                            $ids = $records->pluck('id')->toArray();
-                            DB::table('newsletter_subscribers')->whereIn('id', $ids)->delete();
-                        }),
+                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('subscribed_at', 'desc');
@@ -186,6 +169,7 @@ class NewsletterSubscriberResource extends Resource
     {
         return [
             'index' => Pages\ListNewsletterSubscribers::route('/'),
+            'edit' => Pages\EditNewsletterSubscriber::route('/{record}/edit'),
         ];
     }
 }

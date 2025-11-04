@@ -42,6 +42,15 @@ class TransactionResource extends Resource
                             ->searchable()
                             ->preload()
                             ->required()
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                if ($state) {
+                                    $account = Account::find($state);
+                                    if ($account) {
+                                        $set('current_balance', $account->available_balance);
+                                    }
+                                }
+                            })
                             ->columnSpanFull(),
 
                         Forms\Components\Select::make('type')
@@ -51,6 +60,7 @@ class TransactionResource extends Resource
                                 'debit' => 'Débit (Sortie)',
                             ])
                             ->required()
+                            ->live()
                             ->default('debit'),
 
                         Forms\Components\Select::make('category')
@@ -83,12 +93,43 @@ class TransactionResource extends Resource
 
                 Forms\Components\Section::make('Montants')
                     ->schema([
+                        Forms\Components\TextInput::make('current_balance')
+                            ->label('Solde actuel du compte')
+                            ->numeric()
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->prefix('CHF')
+                            ->visible(fn (Forms\Get $get) => $get('account_id') !== null),
+
                         Forms\Components\TextInput::make('amount')
                             ->label('Montant')
                             ->required()
                             ->numeric()
                             ->step(0.01)
-                            ->minValue(0)
+                            ->minValue(0.01)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                                if ($state && $get('account_id') && $get('type')) {
+                                    $account = Account::find($get('account_id'));
+                                    if ($account) {
+                                        $currentBalance = $account->available_balance;
+                                        $newBalance = $get('type') === 'credit'
+                                            ? $currentBalance + $state
+                                            : $currentBalance - $state;
+                                        $set('balance_after', $newBalance);
+                                    }
+                                }
+                            })
+                            ->rules([
+                                fn (Forms\Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                                    if ($get('type') === 'debit' && $get('account_id')) {
+                                        $account = Account::find($get('account_id'));
+                                        if ($account && $value > $account->available_balance) {
+                                            $fail("Solde insuffisant. Disponible: " . number_format($account->available_balance, 2) . " CHF");
+                                        }
+                                    }
+                                },
+                            ])
                             ->prefix('CHF'),
 
                         Forms\Components\Select::make('currency')
@@ -104,10 +145,12 @@ class TransactionResource extends Resource
 
                         Forms\Components\TextInput::make('balance_after')
                             ->label('Solde Après Transaction')
-                            ->required()
                             ->numeric()
                             ->step(0.01)
-                            ->prefix('CHF'),
+                            ->disabled()
+                            ->dehydrated()
+                            ->prefix('CHF')
+                            ->helperText('Calculé automatiquement'),
                     ])
                     ->columns(3),
 
@@ -282,7 +325,20 @@ class TransactionResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => $record->status !== 'completed'),
+
+                Tables\Actions\Action::make('complete')
+                    ->label('Marquer comme complété')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn ($record) => $record->status === 'pending')
+                    ->action(function ($record) {
+                        $record->update(['status' => 'completed']);
+                    })
+                    ->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -299,11 +355,18 @@ class TransactionResource extends Resource
         ];
     }
 
+    public static function canEdit($record): bool
+    {
+        // Block editing of completed transactions to maintain data integrity
+        return $record->status !== 'completed';
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListTransactions::route('/'),
             'create' => Pages\CreateTransaction::route('/create'),
+            'view' => Pages\ViewTransaction::route('/{record}'),
             'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
     }
