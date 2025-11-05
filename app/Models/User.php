@@ -95,6 +95,21 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Boot method to automatically sync name with first_name and last_name
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($user) {
+            // Auto-generate 'name' from first_name and last_name if they exist
+            if (empty($user->name) && ($user->first_name || $user->last_name)) {
+                $user->name = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
+            }
+        });
+    }
+
     // Relations
     public function creditRequests()
     {

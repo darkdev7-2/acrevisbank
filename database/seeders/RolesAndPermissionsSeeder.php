@@ -105,6 +105,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@acrevisbank.ch'],
             [
+                'name' => 'Super Admin',
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
                 'password' => bcrypt('password'),
