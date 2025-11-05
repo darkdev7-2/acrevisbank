@@ -42,4 +42,12 @@ class Agency extends Model
             'is_active' => 'boolean',
         ];
     }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'city', 'phone', 'email', 'is_active'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 }

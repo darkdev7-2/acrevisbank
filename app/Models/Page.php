@@ -48,4 +48,12 @@ class Page extends Model
             'content' => $this->getTranslations('content'),
         ];
     }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title', 'slug', 'is_published', 'show_in_menu'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 }

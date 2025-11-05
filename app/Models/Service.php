@@ -63,4 +63,12 @@ class Service extends Model
             'segment' => $this->segment,
         ];
     }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title', 'description', 'category', 'segment', 'is_active', 'is_featured'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 }
