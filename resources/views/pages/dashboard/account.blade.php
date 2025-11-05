@@ -23,6 +23,26 @@
                 'actions' => 'Actions',
                 'new_transfer' => 'Nouveau virement',
                 'export' => 'Exporter',
+                'show_filters' => 'Afficher les filtres',
+                'hide_filters' => 'Masquer les filtres',
+                'filters' => 'Filtres',
+                'date_from' => 'Date de début',
+                'date_to' => 'Date de fin',
+                'type' => 'Type',
+                'all' => 'Tous',
+                'debits' => 'Débits',
+                'credits' => 'Crédits',
+                'min_amount' => 'Montant min (CHF)',
+                'max_amount' => 'Montant max (CHF)',
+                'search' => 'Rechercher',
+                'search_placeholder' => 'Description, bénéficiaire, référence...',
+                'apply_filters' => 'Appliquer les filtres',
+                'reset' => 'Réinitialiser',
+                'export_pdf' => 'Exporter PDF',
+                'export_csv' => 'Exporter CSV',
+                'active_filters' => 'Filtres actifs:',
+                'from' => 'Du:',
+                'to' => 'Au:',
             ],
             'de' => [
                 'title' => 'Kontodetails',
@@ -44,6 +64,26 @@
                 'actions' => 'Aktionen',
                 'new_transfer' => 'Neue Überweisung',
                 'export' => 'Exportieren',
+                'show_filters' => 'Filter anzeigen',
+                'hide_filters' => 'Filter ausblenden',
+                'filters' => 'Filter',
+                'date_from' => 'Von Datum',
+                'date_to' => 'Bis Datum',
+                'type' => 'Typ',
+                'all' => 'Alle',
+                'debits' => 'Belastungen',
+                'credits' => 'Gutschriften',
+                'min_amount' => 'Mindestbetrag (CHF)',
+                'max_amount' => 'Maximalbetrag (CHF)',
+                'search' => 'Suchen',
+                'search_placeholder' => 'Beschreibung, Empfänger, Referenz...',
+                'apply_filters' => 'Filter anwenden',
+                'reset' => 'Zurücksetzen',
+                'export_pdf' => 'PDF exportieren',
+                'export_csv' => 'CSV exportieren',
+                'active_filters' => 'Aktive Filter:',
+                'from' => 'Von:',
+                'to' => 'Bis:',
             ],
             'en' => [
                 'title' => 'Account details',
@@ -65,6 +105,26 @@
                 'actions' => 'Actions',
                 'new_transfer' => 'New transfer',
                 'export' => 'Export',
+                'show_filters' => 'Show filters',
+                'hide_filters' => 'Hide filters',
+                'filters' => 'Filters',
+                'date_from' => 'Start date',
+                'date_to' => 'End date',
+                'type' => 'Type',
+                'all' => 'All',
+                'debits' => 'Debits',
+                'credits' => 'Credits',
+                'min_amount' => 'Min amount (CHF)',
+                'max_amount' => 'Max amount (CHF)',
+                'search' => 'Search',
+                'search_placeholder' => 'Description, recipient, reference...',
+                'apply_filters' => 'Apply filters',
+                'reset' => 'Reset',
+                'export_pdf' => 'Export PDF',
+                'export_csv' => 'Export CSV',
+                'active_filters' => 'Active filters:',
+                'from' => 'From:',
+                'to' => 'To:',
             ],
             'es' => [
                 'title' => 'Detalles de cuenta',
@@ -86,6 +146,26 @@
                 'actions' => 'Acciones',
                 'new_transfer' => 'Nueva transferencia',
                 'export' => 'Exportar',
+                'show_filters' => 'Mostrar filtros',
+                'hide_filters' => 'Ocultar filtros',
+                'filters' => 'Filtros',
+                'date_from' => 'Fecha de inicio',
+                'date_to' => 'Fecha de fin',
+                'type' => 'Tipo',
+                'all' => 'Todos',
+                'debits' => 'Débitos',
+                'credits' => 'Créditos',
+                'min_amount' => 'Monto mín (CHF)',
+                'max_amount' => 'Monto máx (CHF)',
+                'search' => 'Buscar',
+                'search_placeholder' => 'Descripción, beneficiario, referencia...',
+                'apply_filters' => 'Aplicar filtros',
+                'reset' => 'Reiniciar',
+                'export_pdf' => 'Exportar PDF',
+                'export_csv' => 'Exportar CSV',
+                'active_filters' => 'Filtros activos:',
+                'from' => 'Desde:',
+                'to' => 'Hasta:',
             ]
         ];
 
@@ -127,12 +207,12 @@
             <!-- Filters & Export Section -->
             <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-900">{{ $t['export'] }} & Filtres</h3>
+                    <h3 class="text-lg font-bold text-gray-900">{{ $t['export'] }} & {{ $t['filters'] }}</h3>
                     <button onclick="toggleFilters()" type="button" class="text-sm text-pink-600 hover:text-pink-700 font-medium">
                         <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                         </svg>
-                        <span id="filterToggleText">Afficher les filtres</span>
+                        <span id="filterToggleText">{{ $t['show_filters'] }}</span>
                     </button>
                 </div>
 
@@ -142,7 +222,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Date From -->
                             <div>
-                                <label for="date_from" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                                <label for="date_from" class="block text-sm font-medium text-gray-700 mb-1">{{ $t['date_from'] }}</label>
                                 <input type="date"
                                        name="date_from"
                                        id="date_from"
@@ -152,7 +232,7 @@
 
                             <!-- Date To -->
                             <div>
-                                <label for="date_to" class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                                <label for="date_to" class="block text-sm font-medium text-gray-700 mb-1">{{ $t['date_to'] }}</label>
                                 <input type="date"
                                        name="date_to"
                                        id="date_to"
@@ -162,19 +242,19 @@
 
                             <!-- Type -->
                             <div>
-                                <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                <label for="type" class="block text-sm font-medium text-gray-700 mb-1">{{ $t['type'] }}</label>
                                 <select name="type"
                                         id="type"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
-                                    <option value="all" {{ request('type', 'all') === 'all' ? 'selected' : '' }}>Tous</option>
-                                    <option value="debit" {{ request('type') === 'debit' ? 'selected' : '' }}>Débits</option>
-                                    <option value="credit" {{ request('type') === 'credit' ? 'selected' : '' }}>Crédits</option>
+                                    <option value="all" {{ request('type', 'all') === 'all' ? 'selected' : '' }}>{{ $t['all'] }}</option>
+                                    <option value="debit" {{ request('type') === 'debit' ? 'selected' : '' }}>{{ $t['debits'] }}</option>
+                                    <option value="credit" {{ request('type') === 'credit' ? 'selected' : '' }}>{{ $t['credits'] }}</option>
                                 </select>
                             </div>
 
                             <!-- Min Amount -->
                             <div>
-                                <label for="min_amount" class="block text-sm font-medium text-gray-700 mb-1">Montant min (CHF)</label>
+                                <label for="min_amount" class="block text-sm font-medium text-gray-700 mb-1">{{ $t['min_amount'] }}</label>
                                 <input type="number"
                                        name="min_amount"
                                        id="min_amount"
@@ -186,7 +266,7 @@
 
                             <!-- Max Amount -->
                             <div>
-                                <label for="max_amount" class="block text-sm font-medium text-gray-700 mb-1">Montant max (CHF)</label>
+                                <label for="max_amount" class="block text-sm font-medium text-gray-700 mb-1">{{ $t['max_amount'] }}</label>
                                 <input type="number"
                                        name="max_amount"
                                        id="max_amount"
@@ -198,12 +278,12 @@
 
                             <!-- Search -->
                             <div>
-                                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Rechercher</label>
+                                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">{{ $t['search'] }}</label>
                                 <input type="text"
                                        name="search"
                                        id="search"
                                        value="{{ request('search') }}"
-                                       placeholder="Description, bénéficiaire, référence..."
+                                       placeholder="{{ $t['search_placeholder'] }}"
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500">
                             </div>
                         </div>
@@ -214,14 +294,14 @@
                                 <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
                                 </svg>
-                                Appliquer les filtres
+                                {{ $t['apply_filters'] }}
                             </button>
                             <a href="{{ route('dashboard.account', ['locale' => $currentLocale, 'id' => $account->id]) }}"
                                class="px-6 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors font-medium">
                                 <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
-                                Réinitialiser
+                                {{ $t['reset'] }}
                             </a>
                         </div>
                     </form>
@@ -235,14 +315,14 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                         </svg>
-                        Exporter PDF
+                        {{ $t['export_pdf'] }}
                     </a>
                     <a href="{{ route('dashboard.transactions.export.csv', ['locale' => $currentLocale, 'accountId' => $account->id]) }}?{{ http_build_query(request()->except('page')) }}"
                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        Exporter CSV
+                        {{ $t['export_csv'] }}
                     </a>
                     <a href="{{ route('dashboard.transfer', ['locale' => $currentLocale]) }}"
                        class="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors font-medium ml-auto">
@@ -262,20 +342,20 @@
                 @if($hasFilters)
                     <div class="mt-4 pt-4 border-t border-gray-200">
                         <div class="flex flex-wrap gap-2 items-center">
-                            <span class="text-sm font-medium text-gray-700">Filtres actifs:</span>
+                            <span class="text-sm font-medium text-gray-700">{{ $t['active_filters'] }}</span>
                             @if(request('date_from'))
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                                    Du: {{ request('date_from') }}
+                                    {{ $t['from'] }} {{ request('date_from') }}
                                 </span>
                             @endif
                             @if(request('date_to'))
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                                    Au: {{ request('date_to') }}
+                                    {{ $t['to'] }} {{ request('date_to') }}
                                 </span>
                             @endif
                             @if(request('type') && request('type') !== 'all')
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                                    Type: {{ request('type') === 'debit' ? 'Débits' : 'Crédits' }}
+                                    {{ $t['type'] }}: {{ request('type') === 'debit' ? $t['debits'] : $t['credits'] }}
                                 </span>
                             @endif
                             @if(request('min_amount'))
@@ -290,7 +370,7 @@
                             @endif
                             @if(request('search'))
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                                    Recherche: "{{ request('search') }}"
+                                    {{ $t['search'] }}: "{{ request('search') }}"
                                 </span>
                             @endif
                         </div>
@@ -385,10 +465,10 @@
 
             if (filterForm.classList.contains('hidden')) {
                 filterForm.classList.remove('hidden');
-                toggleText.textContent = 'Masquer les filtres';
+                toggleText.textContent = '{{ $t["hide_filters"] }}';
             } else {
                 filterForm.classList.add('hidden');
-                toggleText.textContent = 'Afficher les filtres';
+                toggleText.textContent = '{{ $t["show_filters"] }}';
             }
         }
 

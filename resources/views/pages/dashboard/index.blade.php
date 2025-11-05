@@ -31,6 +31,109 @@
                 'monthly_summary' => 'Résumé mensuel',
                 'income' => 'Revenus',
                 'expenses' => 'Dépenses',
+                'transfer_success' => 'Virement effectué avec succès',
+                'reference' => 'Référence',
+                'beneficiary' => 'Bénéficiaire',
+                'download_receipt' => 'Télécharger le reçu',
+            ],
+            'de' => [
+                'title' => 'Mein Kundenbereich',
+                'welcome' => 'Willkommen',
+                'total_balance' => 'Gesamtsaldo',
+                'accounts' => 'Meine Konten',
+                'account_number' => 'Kontonummer',
+                'iban' => 'IBAN',
+                'balance' => 'Saldo',
+                'available' => 'Verfügbar',
+                'recent_transactions' => 'Letzte Transaktionen',
+                'view_all' => 'Alle ansehen',
+                'view_account' => 'Konto ansehen',
+                'quick_actions' => 'Schnellaktionen',
+                'new_transfer' => 'Neue Überweisung',
+                'request_credit' => 'Kredit beantragen',
+                'contact_advisor' => 'Berater kontaktieren',
+                'date' => 'Datum',
+                'description' => 'Beschreibung',
+                'amount' => 'Betrag',
+                'no_accounts' => 'Keine Konten',
+                'no_accounts_text' => 'Sie haben noch kein aktives Konto.',
+                'no_transactions' => 'Keine Transaktionen',
+                'opened_on' => 'Eröffnet am',
+                'total_accounts' => 'Konten',
+                'recent_activity' => 'Letzte Aktivität',
+                'monthly_summary' => 'Monatszusammenfassung',
+                'income' => 'Einnahmen',
+                'expenses' => 'Ausgaben',
+                'transfer_success' => 'Überweisung erfolgreich durchgeführt',
+                'reference' => 'Referenz',
+                'beneficiary' => 'Empfänger',
+                'download_receipt' => 'Beleg herunterladen',
+            ],
+            'en' => [
+                'title' => 'My client area',
+                'welcome' => 'Welcome',
+                'total_balance' => 'Total balance',
+                'accounts' => 'My accounts',
+                'account_number' => 'Account number',
+                'iban' => 'IBAN',
+                'balance' => 'Balance',
+                'available' => 'Available',
+                'recent_transactions' => 'Recent transactions',
+                'view_all' => 'View all',
+                'view_account' => 'View account',
+                'quick_actions' => 'Quick actions',
+                'new_transfer' => 'New transfer',
+                'request_credit' => 'Request credit',
+                'contact_advisor' => 'Contact advisor',
+                'date' => 'Date',
+                'description' => 'Description',
+                'amount' => 'Amount',
+                'no_accounts' => 'No accounts',
+                'no_accounts_text' => 'You don\'t have an active account yet.',
+                'no_transactions' => 'No transactions',
+                'opened_on' => 'Opened on',
+                'total_accounts' => 'Accounts',
+                'recent_activity' => 'Recent activity',
+                'monthly_summary' => 'Monthly summary',
+                'income' => 'Income',
+                'expenses' => 'Expenses',
+                'transfer_success' => 'Transfer completed successfully',
+                'reference' => 'Reference',
+                'beneficiary' => 'Beneficiary',
+                'download_receipt' => 'Download receipt',
+            ],
+            'es' => [
+                'title' => 'Mi área de cliente',
+                'welcome' => 'Bienvenido',
+                'total_balance' => 'Saldo total',
+                'accounts' => 'Mis cuentas',
+                'account_number' => 'Número de cuenta',
+                'iban' => 'IBAN',
+                'balance' => 'Saldo',
+                'available' => 'Disponible',
+                'recent_transactions' => 'Transacciones recientes',
+                'view_all' => 'Ver todo',
+                'view_account' => 'Ver cuenta',
+                'quick_actions' => 'Acciones rápidas',
+                'new_transfer' => 'Nueva transferencia',
+                'request_credit' => 'Solicitar crédito',
+                'contact_advisor' => 'Contactar asesor',
+                'date' => 'Fecha',
+                'description' => 'Descripción',
+                'amount' => 'Monto',
+                'no_accounts' => 'Sin cuentas',
+                'no_accounts_text' => 'Aún no tiene una cuenta activa.',
+                'no_transactions' => 'Sin transacciones',
+                'opened_on' => 'Abierto el',
+                'total_accounts' => 'Cuentas',
+                'recent_activity' => 'Actividad reciente',
+                'monthly_summary' => 'Resumen mensual',
+                'income' => 'Ingresos',
+                'expenses' => 'Gastos',
+                'transfer_success' => 'Transferencia realizada con éxito',
+                'reference' => 'Referencia',
+                'beneficiary' => 'Beneficiario',
+                'download_receipt' => 'Descargar recibo',
             ],
         ];
 
@@ -68,18 +171,18 @@
                             </div>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-lg font-bold text-green-900">Virement effectué avec succès</h3>
+                            <h3 class="text-lg font-bold text-green-900">{{ $t['transfer_success'] }}</h3>
                             <div class="mt-2 space-y-1">
                                 <p class="text-sm text-green-800">
-                                    <span class="font-medium">Référence:</span>
+                                    <span class="font-medium">{{ $t['reference'] }}:</span>
                                     <span class="font-mono ml-2">{{ session('transfer_success')['reference'] }}</span>
                                 </p>
                                 <p class="text-sm text-green-800">
-                                    <span class="font-medium">Montant:</span>
+                                    <span class="font-medium">{{ $t['amount'] }}:</span>
                                     <span class="font-bold ml-2">{{ number_format(session('transfer_success')['amount'], 2, '.', "'") }} CHF</span>
                                 </p>
                                 <p class="text-sm text-green-800">
-                                    <span class="font-medium">Bénéficiaire:</span>
+                                    <span class="font-medium">{{ $t['beneficiary'] }}:</span>
                                     <span class="ml-2">{{ session('transfer_success')['recipient_name'] }}</span>
                                 </p>
                                 @if(session('transfer_success')['recipient_iban'])
@@ -96,7 +199,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        Télécharger le reçu
+                        {{ $t['download_receipt'] }}
                     </a>
                 </div>
             </div>
