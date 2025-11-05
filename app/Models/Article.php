@@ -68,9 +68,12 @@ class Article extends Model
             'category' => $this->category?->name,
         ];
     }
-}
 
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()->logOnly(['title', 'slug', 'is_published'])->logOnlyDirty();
+        return LogOptions::defaults()
+            ->logOnly(['title', 'slug', 'is_published'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
+}
