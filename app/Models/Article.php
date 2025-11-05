@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Laravel\Scout\Searchable;
 
 class Article extends Model
 {
+    use LogsActivity;
     use HasTranslations, Searchable;
 
     protected $fillable = [
@@ -66,3 +69,8 @@ class Article extends Model
         ];
     }
 }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logOnly(['title', 'slug', 'is_published'])->logOnlyDirty();
+    }

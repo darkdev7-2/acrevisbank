@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Beneficiary extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'user_id',
         'name',
@@ -35,5 +38,14 @@ class Beneficiary extends Model
     {
         // Format IBAN with spaces: CH12 3456 7890 1234 5678 9
         return chunk_split($this->iban, 4, ' ');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'iban', 'bank_name', 'is_favorite'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Beneficiary {$eventName}");
     }
 }

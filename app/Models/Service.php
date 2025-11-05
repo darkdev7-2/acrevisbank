@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Laravel\Scout\Searchable;
 
 class Service extends Model
 {
+    use LogsActivity;
     use HasTranslations, Searchable;
 
     protected $fillable = [
