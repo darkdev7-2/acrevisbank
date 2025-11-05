@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Validate;
 use App\Models\CreditRequest;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -43,74 +44,20 @@ class CreditRequestForm extends Component
     public $other_credit_details = '';
     public $attachment = null;
 
-    protected function rules()
-    {
-        $rules = [];
-
-        if ($this->currentStep == 1) {
-            $rules = [
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'gender' => 'nullable|in:M,F,Other',
-                'birth_date' => 'nullable|date|before:today',
-                'nationality' => 'nullable|string|max:100',
-                'marital_status' => 'nullable|in:single,married,divorced,widowed,partnership',
-                'profession' => 'nullable|string|max:255',
-            ];
-        } elseif ($this->currentStep == 2) {
-            $rules = [
-                'country' => 'required|string|max:100',
-                'city' => 'required|string|max:255',
-                'address' => 'required|string',
-                'email' => 'required|email|max:255',
-                'phone' => 'required|string|max:50',
-                'whatsapp' => 'nullable|string|max:50',
-            ];
-        } elseif ($this->currentStep == 3) {
-            $rules = [
-                'amount' => 'required|numeric|min:1000|max:1000000',
-                'currency' => 'required|in:CHF,EUR,USD',
-                'duration_months' => 'required|integer|min:12|max:360',
-                'purpose' => 'required|string|max:1000',
-                'has_other_credit' => 'boolean',
-                'other_credit_details' => 'nullable|string|max:500',
-                'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB
-            ];
-        }
-
-        return $rules;
-    }
-
-    protected function messages()
-    {
-        return [
-            'first_name.required' => 'Le prénom est requis.',
-            'last_name.required' => 'Le nom est requis.',
-            'country.required' => 'Le pays est requis.',
-            'city.required' => 'La ville est requise.',
-            'address.required' => 'L\'adresse est requise.',
-            'email.required' => 'L\'email est requis.',
-            'email.email' => 'L\'email doit être une adresse valide.',
-            'phone.required' => 'Le téléphone est requis.',
-            'amount.required' => 'Le montant est requis.',
-            'amount.min' => 'Le montant minimum est de 1\'000 CHF.',
-            'amount.max' => 'Le montant maximum est de 1\'000\'000 CHF.',
-            'duration_months.required' => 'La durée est requise.',
-            'duration_months.min' => 'La durée minimum est de 12 mois.',
-            'duration_months.max' => 'La durée maximum est de 360 mois.',
-            'purpose.required' => 'L\'objet du crédit est requis.',
-            'attachment.mimes' => 'Le fichier doit être au format PDF, JPG, JPEG ou PNG.',
-            'attachment.max' => 'Le fichier ne doit pas dépasser 5MB.',
-        ];
-    }
-
     public function nextStep()
     {
-        $this->validate();
+        // Validate based on current step
+        if ($this->currentStep == 1) {
+            $this->validateStep1();
+        } elseif ($this->currentStep == 2) {
+            $this->validateStep2();
+        } elseif ($this->currentStep == 3) {
+            $this->validateStep3();
+        }
 
+        // If validation passes, go to next step
         if ($this->currentStep < $this->totalSteps) {
             $this->currentStep++;
-            $this->dispatch('step-changed', step: $this->currentStep);
         }
     }
 
@@ -120,13 +67,71 @@ class CreditRequestForm extends Component
 
         if ($this->currentStep > 1) {
             $this->currentStep--;
-            $this->dispatch('step-changed', step: $this->currentStep);
         }
+    }
+
+    protected function validateStep1()
+    {
+        $this->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => 'nullable|in:M,F,Other',
+            'birth_date' => 'nullable|date|before:today',
+            'nationality' => 'nullable|string|max:100',
+            'marital_status' => 'nullable|in:single,married,divorced,widowed,partnership',
+            'profession' => 'nullable|string|max:255',
+        ], [
+            'first_name.required' => 'Le prénom est requis.',
+            'last_name.required' => 'Le nom est requis.',
+        ]);
+    }
+
+    protected function validateStep2()
+    {
+        $this->validate([
+            'country' => 'required|string|max:100',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:50',
+            'whatsapp' => 'nullable|string|max:50',
+        ], [
+            'country.required' => 'Le pays est requis.',
+            'city.required' => 'La ville est requise.',
+            'address.required' => 'L\'adresse est requise.',
+            'email.required' => 'L\'email est requis.',
+            'email.email' => 'L\'email doit être une adresse valide.',
+            'phone.required' => 'Le téléphone est requis.',
+        ]);
+    }
+
+    protected function validateStep3()
+    {
+        $this->validate([
+            'amount' => 'required|numeric|min:1000|max:1000000',
+            'currency' => 'required|in:CHF,EUR,USD',
+            'duration_months' => 'required|integer|min:12|max:360',
+            'purpose' => 'required|string|max:1000',
+            'has_other_credit' => 'boolean',
+            'other_credit_details' => 'nullable|string|max:500',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ], [
+            'amount.required' => 'Le montant est requis.',
+            'amount.min' => 'Le montant minimum est de 1\'000 CHF.',
+            'amount.max' => 'Le montant maximum est de 1\'000\'000 CHF.',
+            'duration_months.required' => 'La durée est requise.',
+            'duration_months.min' => 'La durée minimum est de 12 mois.',
+            'duration_months.max' => 'La durée maximum est de 360 mois.',
+            'purpose.required' => 'L\'objet du crédit est requis.',
+            'attachment.mimes' => 'Le fichier doit être au format PDF, JPG, JPEG ou PNG.',
+            'attachment.max' => 'Le fichier ne doit pas dépasser 5MB.',
+        ]);
     }
 
     public function submit()
     {
-        $this->validate();
+        // Final validation
+        $this->validateStep3();
 
         try {
             // Handle file upload
