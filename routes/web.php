@@ -200,3 +200,8 @@ Route::get('/register-account', \App\Livewire\MultiStepRegistration::class)->nam
 Route::get('/pending-validation', function () {
     return view('pages.auth.pending-validation');
 })->name('auth.pending-validation');
+
+// TEST LIVEWIRE - Route de diagnostic
+Route::get('/test-livewire', function () {
+    return view('pages.test-livewire');
+})->name('test.livewire');
