@@ -46,33 +46,18 @@ class CreditRequestForm extends Component
 
     public function nextStep()
     {
-        // Debug: Log l'appel de la méthode
-        Log::info('nextStep called - Current step: ' . $this->currentStep);
-
         // Validate based on current step
-        try {
-            if ($this->currentStep == 1) {
-                Log::info('Validating step 1');
-                $this->validateStep1();
-                Log::info('Step 1 validation passed');
-            } elseif ($this->currentStep == 2) {
-                Log::info('Validating step 2');
-                $this->validateStep2();
-                Log::info('Step 2 validation passed');
-            } elseif ($this->currentStep == 3) {
-                Log::info('Validating step 3');
-                $this->validateStep3();
-                Log::info('Step 3 validation passed');
-            }
+        if ($this->currentStep == 1) {
+            $this->validateStep1();
+        } elseif ($this->currentStep == 2) {
+            $this->validateStep2();
+        } elseif ($this->currentStep == 3) {
+            $this->validateStep3();
+        }
 
-            // If validation passes, go to next step
-            if ($this->currentStep < $this->totalSteps) {
-                $this->currentStep++;
-                Log::info('Moved to step: ' . $this->currentStep);
-            }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::info('Validation failed: ' . json_encode($e->errors()));
-            throw $e;
+        // If validation passes, go to next step
+        if ($this->currentStep < $this->totalSteps) {
+            $this->currentStep++;
         }
     }
 

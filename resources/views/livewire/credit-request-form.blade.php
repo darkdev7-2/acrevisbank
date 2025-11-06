@@ -180,19 +180,6 @@
     @endphp
 
     <div class="max-w-4xl mx-auto">
-        <!-- Debug Info (Remove in production) -->
-        <div class="mb-4 p-4 bg-yellow-100 border border-yellow-400 rounded">
-            <p class="font-bold">🔧 DEBUG MODE</p>
-            <p>Étape actuelle: <span class="font-mono font-bold">{{ $currentStep }}</span></p>
-            <p>Prénom: <span class="font-mono">{{ $first_name ?: '(vide)' }}</span></p>
-            <p>Nom: <span class="font-mono">{{ $last_name ?: '(vide)' }}</span></p>
-            <button type="button"
-                    wire:click="$set('currentStep', 2)"
-                    class="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm">
-                Test: Forcer Étape 2
-            </button>
-        </div>
-
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $t['title'] }}</h1>
