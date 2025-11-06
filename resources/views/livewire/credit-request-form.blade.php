@@ -244,8 +244,8 @@
             </div>
         </div>
 
-        <!-- Form -->
-        <form wire:submit.prevent="nextStep" class="bg-white rounded-lg shadow-lg p-8">
+        <!-- Form Container (Not a form tag to avoid conflicts) -->
+        <div class="bg-white rounded-lg shadow-lg p-8">
 
             <!-- Loading Indicator -->
             <div wire:loading class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
@@ -622,6 +622,6 @@
                 @endif
             </div>
 
-        </form>
+        </div>
     </div>
 </div>
