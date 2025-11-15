@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Transaction;
+use App\Traits\HasEncryptedAttributes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasEncryptedAttributes;
 
     /**
      * The attributes that are mass assignable.
@@ -59,6 +60,12 @@ class User extends Authenticatable
         'marketing_consent_at',
         'is_active',
         'last_login_at',
+        'two_factor_enabled',
+        'two_factor_email_code',
+        'two_factor_email_code_expires_at',
+        'two_factor_verified_at',
+        'failed_two_factor_attempts',
+        'two_factor_locked_until',
     ];
 
     /**
@@ -69,6 +76,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_email_code',
     ];
 
     /**
@@ -92,6 +100,10 @@ class User extends Authenticatable
             'marketing_consent' => 'boolean',
             'politically_exposed' => 'boolean',
             'annual_income' => 'decimal:2',
+            'two_factor_enabled' => 'boolean',
+            'two_factor_email_code_expires_at' => 'datetime',
+            'two_factor_verified_at' => 'datetime',
+            'two_factor_locked_until' => 'datetime',
         ];
     }
 
@@ -146,5 +158,25 @@ class User extends Authenticatable
     {
         // Allow access if user has 'access dashboard' permission
         return $this->hasPermissionTo('access dashboard');
+    }
+
+    /**
+     * Get the attributes that should be encrypted at-rest
+     *
+     * @return array
+     */
+    protected function encryptedAttributes(): array
+    {
+        return [
+            'tax_identification_number',
+            'id_document_number',
+            'phone',
+            'whatsapp',
+            'address',
+            'street',
+            'postal_code',
+            'birth_place',
+            'employer',
+        ];
     }
 }

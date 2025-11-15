@@ -154,8 +154,8 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         return view('pages.contact');
     })->name('contact');
 
-    // Dashboard (Customer Area) - Protected by auth middleware
-    Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(function () {
+    // Dashboard (Customer Area) - Protected by auth and 2FA middleware
+    Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'two-factor'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
         Route::get('/account/{id}', [DashboardController::class, 'account'])->name('account');
         Route::get('/transfer', [DashboardController::class, 'transfer'])->name('transfer');
@@ -207,6 +207,15 @@ Route::get('/register-account', \App\Livewire\MultiStepRegistration::class)->nam
 Route::get('/pending-validation', function () {
     return view('pages.auth.pending-validation');
 })->name('auth.pending-validation');
+
+// Two Factor Authentication routes
+Route::middleware('auth')->prefix('two-factor')->name('two-factor.')->group(function () {
+    Route::get('/challenge', [App\Http\Controllers\TwoFactorController::class, 'show'])->name('show');
+    Route::post('/verify', [App\Http\Controllers\TwoFactorController::class, 'verify'])->name('verify');
+    Route::post('/resend', [App\Http\Controllers\TwoFactorController::class, 'resend'])->name('resend');
+    Route::post('/enable', [App\Http\Controllers\TwoFactorController::class, 'enable'])->name('enable');
+    Route::post('/disable', [App\Http\Controllers\TwoFactorController::class, 'disable'])->name('disable');
+});
 
 // TEST LIVEWIRE - Route de diagnostic
 Route::get('/test-livewire', function () {
