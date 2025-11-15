@@ -89,14 +89,14 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         Route::get('/{slug}', [ServiceController::class, 'show'])->name('detail');
     });
 
-    // Credit Request
-    Route::get('/credit-request', function () {
-        return view('pages.credit-request');
-    })->name('credit.request');
+    // Credit Request - DISABLED (moved to dashboard for authenticated users)
+    // Route::get('/credit-request', function () {
+    //     return view('pages.credit-request');
+    // })->name('credit.request');
 
-    Route::get('/credit-confirmation', function () {
-        return view('pages.credit-confirmation');
-    })->name('credit.confirmation');
+    // Route::get('/credit-confirmation', function () {
+    //     return view('pages.credit-confirmation');
+    // })->name('credit.confirmation');
 
     // E-Banking - Redirect to main login (Fortify)
     Route::prefix('ebanking')->name('ebanking.')->group(function () {
@@ -176,6 +176,13 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
             Route::get('/{id}/edit', [BeneficiaryController::class, 'edit'])->name('edit');
             Route::put('/{id}', [BeneficiaryController::class, 'update'])->name('update');
             Route::delete('/{id}', [BeneficiaryController::class, 'destroy'])->name('destroy');
+        });
+
+        // Credit Requests management (customer area)
+        Route::prefix('credit-requests')->name('credit-requests.')->group(function () {
+            Route::get('/', [DashboardController::class, 'creditRequests'])->name('index');
+            Route::get('/create', [DashboardController::class, 'createCreditRequest'])->name('create');
+            Route::get('/{id}', [DashboardController::class, 'showCreditRequest'])->name('show');
         });
     });
 

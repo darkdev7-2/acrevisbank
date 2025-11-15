@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Transaction;
+use App\Models\CreditRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -178,5 +179,43 @@ class DashboardController extends Controller
 
         return redirect()->route('dashboard.index', ['locale' => app()->getLocale()])
             ->with('success', 'Transfert effectué avec succès');
+    }
+
+    /**
+     * Display a listing of the user's credit requests
+     */
+    public function creditRequests()
+    {
+        $user = Auth::user();
+
+        // Get all credit requests for the authenticated user
+        $creditRequests = $user->creditRequests()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('pages.dashboard.credit-requests.index', compact('creditRequests'));
+    }
+
+    /**
+     * Show the form for creating a new credit request
+     */
+    public function createCreditRequest()
+    {
+        return view('pages.dashboard.credit-requests.create');
+    }
+
+    /**
+     * Display the specified credit request
+     */
+    public function showCreditRequest($locale, $id)
+    {
+        $user = Auth::user();
+
+        // Get the credit request and ensure it belongs to the authenticated user
+        $creditRequest = CreditRequest::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        return view('pages.dashboard.credit-requests.show', compact('creditRequest'));
     }
 }
