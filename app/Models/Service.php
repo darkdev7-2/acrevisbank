@@ -28,7 +28,7 @@ class Service extends Model
         'cta_label',
         'cta_link',
         'is_featured',
-        'is_active',
+        'is_published',
         'order',
     ];
 
@@ -48,7 +48,7 @@ class Service extends Model
             'benefits' => 'array',
             'conditions' => 'array',
             'is_featured' => 'boolean',
-            'is_active' => 'boolean',
+            'is_published' => 'boolean',
         ];
     }
 
@@ -67,8 +67,16 @@ class Service extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'description', 'category', 'segment', 'is_active', 'is_featured'])
+            ->logOnly(['title', 'description', 'category', 'segment', 'is_published', 'is_featured'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
+    }
+
+    /**
+     * Scope to only get published services
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('is_published', true);
     }
 }
