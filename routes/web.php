@@ -194,6 +194,19 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
                 return view('pages.dashboard.card-request');
             })->name('request');
         });
+
+        // Messagerie sécurisée (customer area)
+        Route::get('/messages', App\Livewire\Messages::class)->name('messages');
+
+        // Notifications (customer area)
+        Route::get('/notifications', function () {
+            return view('pages.dashboard.notifications');
+        })->name('notifications');
+
+        // Notification preferences (customer area)
+        Route::get('/notification-preferences', function () {
+            return view('pages.dashboard.notification-preferences');
+        })->name('notification-preferences');
     });
 
     // Legal pages
