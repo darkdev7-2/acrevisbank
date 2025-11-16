@@ -212,7 +212,9 @@ Route::get('/pending-validation', function () {
 Route::middleware('auth')->prefix('two-factor')->name('two-factor.')->group(function () {
     Route::get('/challenge', [App\Http\Controllers\TwoFactorController::class, 'show'])->name('show');
     Route::post('/verify', [App\Http\Controllers\TwoFactorController::class, 'verify'])->name('verify');
-    Route::post('/resend', [App\Http\Controllers\TwoFactorController::class, 'resend'])->name('resend');
+    Route::post('/resend', [App\Http\Controllers\TwoFactorController::class, 'resend'])
+        ->middleware('throttle:3,1') // Limit to 3 requests per minute
+        ->name('resend');
     Route::post('/enable', [App\Http\Controllers\TwoFactorController::class, 'enable'])->name('enable');
     Route::post('/disable', [App\Http\Controllers\TwoFactorController::class, 'disable'])->name('disable');
 });

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\SuspiciousActivity;
 use App\Models\User;
 use App\Notifications\SuspiciousActivityDetected;
+use App\Notifications\UserSuspiciousActivityNotification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -50,6 +51,9 @@ class SuspiciousActivityDetectionService
                 'details' => $details,
             ])
             ->log('Suspicious activity detected: ' . $type);
+
+        // Notifier l'utilisateur de l'activité suspecte
+        $this->notifyUser($user, $activity);
 
         // Notifier les admins si c'est critique
         if (in_array($severity, ['high', 'critical'])) {
@@ -182,6 +186,22 @@ class SuspiciousActivityDetectionService
         // Dans une vraie application, utiliser un service comme GeoIP2
         // Pour l'instant, retourner null
         return null;
+    }
+
+    /**
+     * Notifier l'utilisateur concerné
+     */
+    protected function notifyUser(User $user, SuspiciousActivity $activity): void
+    {
+        try {
+            $user->notify(new UserSuspiciousActivityNotification($activity));
+        } catch (\Exception $e) {
+            Log::error('Failed to notify user about suspicious activity', [
+                'user_id' => $user->id,
+                'activity_id' => $activity->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
