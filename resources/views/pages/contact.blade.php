@@ -1,6 +1,9 @@
 <x-layouts.app>
     @php
+        use App\Models\ContactInfo;
         $currentLocale = app()->getLocale();
+        $headquarters = ContactInfo::getMain();
+        $contactInfos = ContactInfo::active()->get();
 
         $texts = [
             'fr' => [
@@ -172,67 +175,83 @@
             </div>
 
             <!-- Contact Info -->
-            <div class="lg:col-span-1">
-                <div class="bg-gray-50 rounded-lg p-6 space-y-6">
-                    <!-- Address -->
-                    <div>
-                        <h3 class="font-semibold mb-3">
-                            @if($currentLocale === 'fr')
-                                Siège social
-                            @elseif($currentLocale === 'de')
-                                Hauptsitz
-                            @elseif($currentLocale === 'en')
-                                Headquarters
-                            @else
-                                Sede central
-                            @endif
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            acrevis Bank AG<br>
-                            Marktplatz 1<br>
-                            9004 St.Gallen<br>
-                            Switzerland
-                        </p>
-                    </div>
+            <div class="lg:col-span-1 space-y-6">
+                @foreach($contactInfos as $contactInfo)
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="font-bold text-lg mb-4 text-pink-600">{{ $contactInfo->name }}</h3>
 
-                    <!-- Phone -->
-                    <div>
-                        <h3 class="font-semibold mb-3">{{ $t['phone'] }}</h3>
-                        <p class="text-sm text-gray-600">+41 71 227 27 27</p>
-                    </div>
+                        @if($contactInfo->address || $contactInfo->city)
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-sm mb-2">
+                                    @if($currentLocale === 'fr') Adresse
+                                    @elseif($currentLocale === 'de') Adresse
+                                    @elseif($currentLocale === 'en') Address
+                                    @else Dirección @endif
+                                </h4>
+                                <p class="text-sm text-gray-600">
+                                    @if($contactInfo->type === 'headquarters')acrevis Bank AG<br>@endif
+                                    @if($contactInfo->address){{ $contactInfo->getTranslation('address', $currentLocale) }}<br>@endif
+                                    @if($contactInfo->postal_code && $contactInfo->city){{ $contactInfo->postal_code }} {{ $contactInfo->city }}<br>@endif
+                                    @if($contactInfo->country){{ $contactInfo->country }}@endif
+                                </p>
+                            </div>
+                        @endif
 
-                    <!-- Email -->
-                    <div>
-                        <h3 class="font-semibold mb-3">{{ $t['email'] }}</h3>
-                        <p class="text-sm text-gray-600">info@acrevis.ch</p>
-                    </div>
+                        @if($contactInfo->phone)
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-sm mb-2">{{ $t['phone'] }}</h4>
+                                <p class="text-sm text-gray-600">
+                                    <a href="tel:{{ $contactInfo->phone }}" class="hover:text-pink-600">{{ $contactInfo->phone }}</a>
+                                    @if($contactInfo->phone_alt)
+                                        <br><a href="tel:{{ $contactInfo->phone_alt }}" class="hover:text-pink-600">{{ $contactInfo->phone_alt }}</a>
+                                    @endif
+                                </p>
+                            </div>
+                        @endif
 
-                    <!-- Opening Hours -->
-                    <div>
-                        <h3 class="font-semibold mb-3">
-                            @if($currentLocale === 'fr')
-                                Horaires d'ouverture
-                            @elseif($currentLocale === 'de')
-                                Öffnungszeiten
-                            @elseif($currentLocale === 'en')
-                                Opening Hours
-                            @else
-                                Horario de apertura
-                            @endif
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            @if($currentLocale === 'fr')
-                                Lundi - Vendredi: 08:00 - 17:00
-                            @elseif($currentLocale === 'de')
-                                Montag - Freitag: 08:00 - 17:00
-                            @elseif($currentLocale === 'en')
-                                Monday - Friday: 08:00 - 17:00
-                            @else
-                                Lunes - Viernes: 08:00 - 17:00
-                            @endif
-                        </p>
+                        @if($contactInfo->email)
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-sm mb-2">{{ $t['email'] }}</h4>
+                                <p class="text-sm text-gray-600">
+                                    <a href="mailto:{{ $contactInfo->email }}" class="hover:text-pink-600">{{ $contactInfo->email }}</a>
+                                    @if($contactInfo->email_alt)
+                                        <br><a href="mailto:{{ $contactInfo->email_alt }}" class="hover:text-pink-600">{{ $contactInfo->email_alt }}</a>
+                                    @endif
+                                </p>
+                            </div>
+                        @endif
+
+                        @if($contactInfo->whatsapp)
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-sm mb-2">WhatsApp</h4>
+                                <p class="text-sm text-gray-600">
+                                    <a href="https://wa.me/{{ str_replace(['+', ' '], '', $contactInfo->whatsapp) }}" target="_blank" class="hover:text-pink-600">
+                                        {{ $contactInfo->whatsapp }}
+                                    </a>
+                                </p>
+                            </div>
+                        @endif
+
+                        @if($contactInfo->opening_hours)
+                            <div>
+                                <h4 class="font-semibold text-sm mb-2">
+                                    @if($currentLocale === 'fr') Horaires d'ouverture
+                                    @elseif($currentLocale === 'de') Öffnungszeiten
+                                    @elseif($currentLocale === 'en') Opening Hours
+                                    @else Horario de apertura @endif
+                                </h4>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    @foreach($contactInfo->formatted_opening_hours as $day => $hours)
+                                        <div class="flex justify-between">
+                                            <span>{{ $day }}:</span>
+                                            <span class="font-medium">{{ $hours }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

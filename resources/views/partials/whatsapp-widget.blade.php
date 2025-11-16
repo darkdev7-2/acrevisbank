@@ -1,6 +1,11 @@
 @php
+    use App\Models\ContactInfo;
     $currentLocale = app()->getLocale();
-    $whatsappNumber = '+41791234567'; // À configurer dans .env
+    $contactInfo = ContactInfo::where('is_active', true)
+        ->whereNotNull('whatsapp')
+        ->orderBy('order')
+        ->first();
+    $whatsappNumber = $contactInfo?->whatsapp ?? '+41 79 123 45 67';
 
     $messages = [
         'fr' => 'Bonjour Acrevis Bank, j\'ai une question concernant vos services.',
