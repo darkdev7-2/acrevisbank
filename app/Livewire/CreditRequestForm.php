@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
 use App\Models\CreditRequest;
+use App\Mail\CreditRequestReceived;
+use App\Mail\CreditRequestConfirmation;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Exception;
@@ -187,33 +189,30 @@ class CreditRequestForm extends Component
     }
 
     /**
-     * Send email notifications if mail configuration is available
+     * Send email notifications
      */
     private function sendEmailNotifications($creditRequest)
     {
         try {
-            // Check if mail is configured
-            if (config('mail.default') && config('mail.mailers.' . config('mail.default'))) {
-                // Try to get admin email from config or env
-                $adminEmail = config('mail.admin_email', env('MAIL_ADMIN_EMAIL', 'admin@acrevisbank.ch'));
+            // Get admin email from config or env
+            $adminEmail = config('mail.admin_email', env('MAIL_ADMIN_EMAIL', 'admin@acrevis.ch'));
 
-                // You can create proper Mailable classes later
-                // For now, just log that email would be sent
-                Log::info('Email notification would be sent to: ' . $adminEmail);
-                Log::info('Credit Request Reference: ' . $creditRequest->reference_number);
+            // Send notification to admin
+            Mail::to($adminEmail)->send(new CreditRequestReceived($creditRequest));
 
-                // Uncomment when you have proper Mailable classes
-                // Mail::to($adminEmail)->send(new CreditRequestReceived($creditRequest));
-                // Mail::to($this->email)->send(new CreditRequestConfirmation($creditRequest));
-            } else {
-                // Mail not configured - just log and continue
-                Log::info('Mail not configured. Credit request saved without email notification.');
-                Log::info('Credit Request Reference: ' . $creditRequest->reference_number);
-            }
+            // Send confirmation to client
+            Mail::to($creditRequest->email)->send(new CreditRequestConfirmation($creditRequest));
+
+            Log::info('Credit request emails sent successfully', [
+                'reference' => $creditRequest->reference_number,
+                'admin_email' => $adminEmail,
+                'client_email' => $creditRequest->email,
+            ]);
         } catch (Exception $e) {
             // If email fails, log it but don't fail the entire request
-            Log::warning('Failed to send email notification: ' . $e->getMessage());
-            Log::info('Credit request was still saved with reference: ' . $creditRequest->reference_number);
+            Log::warning('Failed to send credit request notification emails: ' . $e->getMessage(), [
+                'reference' => $creditRequest->reference_number,
+            ]);
         }
     }
 
