@@ -168,6 +168,12 @@ class User extends Authenticatable
         return $this->hasOne(NotificationPreference::class);
     }
 
+    // Accessors
+    public function getFullNameAttribute(): string
+    {
+        return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? '')) ?: $this->name;
+    }
+
     // Filament panel access
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
