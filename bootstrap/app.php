@@ -15,12 +15,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\DetectPreferredLocale::class,
             \App\Http\Middleware\ForceHttps::class,
+            \App\Http\Middleware\SessionTimeout::class,
+            \App\Http\Middleware\DetectSuspiciousActivity::class,
         ]);
 
         // Register middleware aliases
         $middleware->alias([
             'two-factor' => \App\Http\Middleware\EnsureTwoFactorAuthenticated::class,
             'force-https' => \App\Http\Middleware\ForceHttps::class,
+            'session-timeout' => \App\Http\Middleware\SessionTimeout::class,
+            'detect-suspicious' => \App\Http\Middleware\DetectSuspiciousActivity::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
