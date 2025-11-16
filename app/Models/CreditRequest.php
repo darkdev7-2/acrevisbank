@@ -36,6 +36,12 @@ class CreditRequest extends Model
         'admin_notes',
         'reviewed_at',
         'reviewed_by',
+        // Disbursement fields
+        'disbursement_code',
+        'disbursement_code_generated_at',
+        'disbursement_status',
+        'account_id',
+        'disbursed_at',
     ];
 
     protected function casts(): array
@@ -45,6 +51,8 @@ class CreditRequest extends Model
             'amount' => 'decimal:2',
             'has_other_credit' => 'boolean',
             'reviewed_at' => 'datetime',
+            'disbursement_code_generated_at' => 'datetime',
+            'disbursed_at' => 'datetime',
         ];
     }
 
@@ -56,6 +64,11 @@ class CreditRequest extends Model
     public function reviewer()
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 
     public function scopePending($query)

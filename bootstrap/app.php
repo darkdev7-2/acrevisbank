@@ -11,9 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Add locale detection middleware to web group
+        // Add security and locale middleware to web group
         $middleware->web(append: [
             \App\Http\Middleware\DetectPreferredLocale::class,
+            \App\Http\Middleware\ForceHttps::class,
+        ]);
+
+        // Register middleware aliases
+        $middleware->alias([
+            'two-factor' => \App\Http\Middleware\EnsureTwoFactorAuthenticated::class,
+            'force-https' => \App\Http\Middleware\ForceHttps::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

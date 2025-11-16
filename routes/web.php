@@ -7,6 +7,7 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\TransactionExportController;
+use App\Http\Controllers\CreditDisbursementController;
 
 // Redirect root to detected or default locale
 Route::get('/', function () {
@@ -59,6 +60,10 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         return view('pages.home');
     })->name('home');
 
+    // Search
+    Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+    Route::get('/search/ajax', [App\Http\Controllers\SearchController::class, 'ajax'])->name('search.ajax');
+
     // Services
     Route::prefix('services')->name('services.')->group(function () {
         // Services index with dynamic filtering
@@ -89,14 +94,14 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         Route::get('/{slug}', [ServiceController::class, 'show'])->name('detail');
     });
 
-    // Credit Request
-    Route::get('/credit-request', function () {
-        return view('pages.credit-request');
-    })->name('credit.request');
+    // Credit Request - DISABLED (moved to dashboard for authenticated users)
+    // Route::get('/credit-request', function () {
+    //     return view('pages.credit-request');
+    // })->name('credit.request');
 
-    Route::get('/credit-confirmation', function () {
-        return view('pages.credit-confirmation');
-    })->name('credit.confirmation');
+    // Route::get('/credit-confirmation', function () {
+    //     return view('pages.credit-confirmation');
+    // })->name('credit.confirmation');
 
     // E-Banking - Redirect to main login (Fortify)
     Route::prefix('ebanking')->name('ebanking.')->group(function () {
@@ -154,8 +159,13 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         return view('pages.contact');
     })->name('contact');
 
-    // Dashboard (Customer Area) - Protected by auth middleware
-    Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(function () {
+    // FAQ
+    Route::get('/faq', function () {
+        return view('pages.faq');
+    })->name('faq');
+
+    // Dashboard (Customer Area) - Protected by auth and 2FA middleware
+    Route::prefix('dashboard')->name('dashboard.')->middleware(['auth', 'two-factor'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
         Route::get('/account/{id}', [DashboardController::class, 'account'])->name('account');
         Route::get('/transfer', [DashboardController::class, 'transfer'])->name('transfer');
@@ -177,6 +187,49 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
             Route::put('/{id}', [BeneficiaryController::class, 'update'])->name('update');
             Route::delete('/{id}', [BeneficiaryController::class, 'destroy'])->name('destroy');
         });
+
+        // Credit Requests management (customer area)
+        Route::prefix('credit-requests')->name('credit-requests.')->group(function () {
+            Route::get('/', [DashboardController::class, 'creditRequests'])->name('index');
+            Route::get('/create', [DashboardController::class, 'createCreditRequest'])->name('create');
+            Route::get('/{id}', [DashboardController::class, 'showCreditRequest'])->name('show');
+        });
+
+        // Credit Disbursement (customer actions)
+        Route::prefix('credit-disbursement')->name('credit-disbursement.')->group(function () {
+            Route::post('/{id}/generate', [CreditDisbursementController::class, 'generateCode'])->name('generate');
+            Route::post('/{id}/validate', [CreditDisbursementController::class, 'validateCode'])->name('validate');
+        });
+
+        // Cards management (customer area) - COMMENTED: Livewire components not yet created
+        // Route::prefix('cards')->name('cards.')->group(function () {
+        //     Route::get('/', App\Livewire\MyCards::class)->name('index');
+        //     Route::get('/{cardId}/transactions', App\Livewire\CardTransactions::class)->name('transactions');
+        //     Route::get('/all-transactions', App\Livewire\CardTransactions::class)->name('all-transactions');
+        //     Route::get('/request', function () {
+        //         return view('pages.dashboard.card-request');
+        //     })->name('request');
+        // });
+
+        // Messagerie sécurisée (customer area) - COMMENTED: Livewire component not yet created
+        // Route::get('/messages', App\Livewire\Messages::class)->name('messages');
+
+        // Notifications (customer area)
+        Route::get('/notifications', function () {
+            return view('pages.dashboard.notifications');
+        })->name('notifications');
+
+        // Notification preferences (customer area)
+        Route::get('/notification-preferences', function () {
+            return view('pages.dashboard.notification-preferences');
+        })->name('notification-preferences');
+    });
+
+    // Admin routes (protected by auth middleware, admin check in controller)
+    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+        // Credit Disbursement Codes (admin view)
+        Route::get('/credit-disbursement-codes', [CreditDisbursementController::class, 'adminViewCodes'])->name('credit-disbursement-codes');
+        Route::delete('/credit-disbursement/{id}/cancel', [CreditDisbursementController::class, 'cancelCode'])->name('credit-disbursement.cancel');
     });
 
     // Legal pages
@@ -200,6 +253,17 @@ Route::get('/register-account', \App\Livewire\MultiStepRegistration::class)->nam
 Route::get('/pending-validation', function () {
     return view('pages.auth.pending-validation');
 })->name('auth.pending-validation');
+
+// Two Factor Authentication routes
+Route::middleware('auth')->prefix('two-factor')->name('two-factor.')->group(function () {
+    Route::get('/challenge', [App\Http\Controllers\TwoFactorController::class, 'show'])->name('show');
+    Route::post('/verify', [App\Http\Controllers\TwoFactorController::class, 'verify'])->name('verify');
+    Route::post('/resend', [App\Http\Controllers\TwoFactorController::class, 'resend'])
+        ->middleware('throttle:3,1') // Limit to 3 requests per minute
+        ->name('resend');
+    Route::post('/enable', [App\Http\Controllers\TwoFactorController::class, 'enable'])->name('enable');
+    Route::post('/disable', [App\Http\Controllers\TwoFactorController::class, 'disable'])->name('disable');
+});
 
 // TEST LIVEWIRE - Route de diagnostic
 Route::get('/test-livewire', function () {
