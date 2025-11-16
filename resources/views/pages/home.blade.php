@@ -310,13 +310,8 @@
                                 Contáctenos
                             @endif
                         </a>
-                        @auth
-                            <a href="{{ route('credit.request', ['locale' => $currentLocale]) }}"
-                               class="inline-flex items-center justify-center px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all shadow-lg hover:shadow-xl text-lg border-2 border-emerald-500">
-                        @else
-                            <a href="{{ route('register', ['locale' => $currentLocale]) }}"
-                               class="inline-flex items-center justify-center px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all shadow-lg hover:shadow-xl text-lg border-2 border-emerald-500">
-                        @endauth
+                        <a href="@auth{{ route('dashboard.credit-requests.create', ['locale' => $currentLocale]) }}@else/{{ $currentLocale }}/register@endauth"
+                           class="inline-flex items-center justify-center px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all shadow-lg hover:shadow-xl text-lg border-2 border-emerald-500">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -435,7 +430,7 @@
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
                     <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop');"></div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
+                        <h3 class="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
                             @if($currentLocale === 'fr')
                                 E-Banking et Mobile Banking
                             @elseif($currentLocale === 'de')
@@ -457,7 +452,7 @@
                                 Gestione sus cuentas en línea 24/7 con nuestra plataforma segura
                             @endif
                         </p>
-                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Comptes & Cartes']) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Comptes & Cartes']) }}" class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
                             @if($currentLocale === 'fr')
                                 En savoir plus
                             @elseif($currentLocale === 'de')
@@ -478,7 +473,7 @@
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
                     <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&h=400&fit=crop');"></div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
+                        <h3 class="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
                             @if($currentLocale === 'fr')
                                 Financer un logement
                             @elseif($currentLocale === 'de')
@@ -500,7 +495,7 @@
                                 Hipotecas ventajosas para su proyecto inmobiliario
                             @endif
                         </p>
-                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Hypothèques & Financements']) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Hypothèques & Financements']) }}" class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
                             @if($currentLocale === 'fr')
                                 En savoir plus
                             @elseif($currentLocale === 'de')
@@ -521,7 +516,7 @@
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-xl transition-shadow">
                     <div class="h-64 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop');"></div>
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-3 group-hover:text-pink-600 transition-colors">
+                        <h3 class="text-xl font-semibold mb-3 group-hover:text-blue-600 transition-colors">
                             @if($currentLocale === 'fr')
                                 Placements et Prévoyance
                             @elseif($currentLocale === 'de')
@@ -543,7 +538,7 @@
                                 Planifique su futuro financiero con nuestros expertos
                             @endif
                         </p>
-                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Placements & Épargne']) }}" class="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium">
+                        <a href="{{ route('services.index', ['locale' => $currentLocale, 'segment' => $currentSegment, 'category' => 'Placements & Épargne']) }}" class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
                             @if($currentLocale === 'fr')
                                 En savoir plus
                             @elseif($currentLocale === 'de')
@@ -564,7 +559,7 @@
     </section>
 
     <!-- Credit Request CTA Section -->
-    <section class="py-16 bg-gradient-to-r from-pink-600 to-purple-700">
+    <section class="py-16 bg-gradient-to-r from-blue-600 to-slate-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="text-white">
@@ -579,7 +574,7 @@
                             ¿Necesita un crédito?
                         @endif
                     </h2>
-                    <p class="text-xl text-pink-100 mb-6">
+                    <p class="text-xl text-blue-100 mb-6">
                         @if($currentLocale === 'fr')
                             Obtenez une réponse rapide pour votre demande de crédit. Taux avantageux et procédure simplifiée.
                         @elseif($currentLocale === 'de')
@@ -656,7 +651,7 @@
                             </span>
                         </li>
                     </ul>
-                    <a href="{{ route('credit.request', ['locale' => $currentLocale]) }}" class="inline-block bg-white text-pink-600 hover:bg-gray-50 font-bold px-8 py-4 rounded-md transition-colors text-lg shadow-lg hover:shadow-xl">
+                    <a href="@auth{{ route('dashboard.credit-requests.create', ['locale' => $currentLocale]) }}@else/{{ $currentLocale }}/register@endauth" class="inline-block bg-white text-blue-600 hover:bg-blue-50 font-bold px-8 py-4 rounded-md transition-colors text-lg shadow-lg hover:shadow-xl">
                         @if($currentLocale === 'fr')
                             Demander un crédit maintenant
                         @elseif($currentLocale === 'de')
@@ -676,7 +671,7 @@
                         <div class="grid grid-cols-2 gap-6">
                             <div class="bg-white/20 rounded-lg p-6 text-center">
                                 <div class="text-4xl font-bold text-white mb-2">2.5%</div>
-                                <div class="text-sm text-pink-100">
+                                <div class="text-sm text-blue-100">
                                     @if($currentLocale === 'fr')
                                         Taux dès
                                     @elseif($currentLocale === 'de')
@@ -690,7 +685,7 @@
                             </div>
                             <div class="bg-white/20 rounded-lg p-6 text-center">
                                 <div class="text-4xl font-bold text-white mb-2">24h</div>
-                                <div class="text-sm text-pink-100">
+                                <div class="text-sm text-blue-100">
                                     @if($currentLocale === 'fr')
                                         Réponse rapide
                                     @elseif($currentLocale === 'de')
@@ -704,7 +699,7 @@
                             </div>
                             <div class="bg-white/20 rounded-lg p-6 text-center">
                                 <div class="text-4xl font-bold text-white mb-2">500K</div>
-                                <div class="text-sm text-pink-100">
+                                <div class="text-sm text-blue-100">
                                     @if($currentLocale === 'fr')
                                         CHF max
                                     @elseif($currentLocale === 'de')
@@ -718,7 +713,7 @@
                             </div>
                             <div class="bg-white/20 rounded-lg p-6 text-center">
                                 <div class="text-4xl font-bold text-white mb-2">0</div>
-                                <div class="text-sm text-pink-100">
+                                <div class="text-sm text-blue-100">
                                     @if($currentLocale === 'fr')
                                         Frais dossier
                                     @elseif($currentLocale === 'de')
@@ -752,7 +747,7 @@
                         Noticias
                     @endif
                 </h2>
-                <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="text-pink-600 hover:text-pink-700 font-medium">
+                <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="text-blue-600 hover:text-blue-700 font-medium">
                     @if($currentLocale === 'fr')
                         Voir tout
                     @elseif($currentLocale === 'de')
@@ -782,7 +777,7 @@
                                     Noticias
                                 @endif
                             </span>
-                            <h3 class="text-lg font-semibold mb-2 group-hover:text-pink-600 transition-colors">
+                            <h3 class="text-lg font-semibold mb-2 group-hover:text-blue-600 transition-colors">
                                 {{ $article->getTranslation('title', $currentLocale) }}
                             </h3>
                             <p class="text-sm text-gray-600 line-clamp-2">
@@ -805,7 +800,7 @@
     <section class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
                     <span class="text-sm">
                         @if($currentLocale === 'fr')
                             Actionnaires & Actionnariat
@@ -821,13 +816,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
-                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
                     <span class="text-sm">Kaspar&acrevis</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
-                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                <a href="#" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
                     <span class="text-sm">
                         @if($currentLocale === 'fr')
                             Taux hypothécaires
@@ -843,7 +838,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
-                <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="flex items-center space-x-2 text-gray-700 hover:text-pink-600">
+                <a href="{{ route('blog', ['locale' => $currentLocale]) }}" class="flex items-center space-x-2 text-gray-700 hover:text-blue-600">
                     <span class="text-sm">Blog</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -1194,14 +1189,14 @@
                             Mi banco cerca
                         @endif
                     </h2>
-                    <select x-model="selectedCity" class="w-full px-4 py-3 border border-gray-300 rounded-md mb-4 focus:ring-pink-500 focus:border-pink-500">
+                    <select x-model="selectedCity" class="w-full px-4 py-3 border border-gray-300 rounded-md mb-4 focus:ring-blue-500 focus:border-blue-500">
                         @foreach($cities as $city)
                             <option value="{{ $city }}">{{ $city }}</option>
                         @endforeach
                     </select>
                     <div class="mt-4">
                         <div class="flex items-start space-x-3">
-                            <svg class="w-5 h-5 text-pink-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
@@ -1223,7 +1218,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="{{ route('agencies', ['locale' => $currentLocale]) }}" class="mt-6 block w-full text-center bg-pink-600 hover:bg-pink-700 text-white font-semibold px-6 py-3 rounded-md transition-colors">
+                    <a href="{{ route('agencies', ['locale' => $currentLocale]) }}" class="mt-6 block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-md transition-colors">
                         @if($currentLocale === 'fr')
                             Voir toutes les agences
                         @elseif($currentLocale === 'de')
