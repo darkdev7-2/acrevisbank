@@ -201,18 +201,18 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
             Route::post('/{id}/validate', [CreditDisbursementController::class, 'validateCode'])->name('validate');
         });
 
-        // Cards management (customer area)
-        Route::prefix('cards')->name('cards.')->group(function () {
-            Route::get('/', App\Livewire\MyCards::class)->name('index');
-            Route::get('/{cardId}/transactions', App\Livewire\CardTransactions::class)->name('transactions');
-            Route::get('/all-transactions', App\Livewire\CardTransactions::class)->name('all-transactions');
-            Route::get('/request', function () {
-                return view('pages.dashboard.card-request');
-            })->name('request');
-        });
+        // Cards management (customer area) - COMMENTED: Livewire components not yet created
+        // Route::prefix('cards')->name('cards.')->group(function () {
+        //     Route::get('/', App\Livewire\MyCards::class)->name('index');
+        //     Route::get('/{cardId}/transactions', App\Livewire\CardTransactions::class)->name('transactions');
+        //     Route::get('/all-transactions', App\Livewire\CardTransactions::class)->name('all-transactions');
+        //     Route::get('/request', function () {
+        //         return view('pages.dashboard.card-request');
+        //     })->name('request');
+        // });
 
-        // Messagerie sécurisée (customer area)
-        Route::get('/messages', App\Livewire\Messages::class)->name('messages');
+        // Messagerie sécurisée (customer area) - COMMENTED: Livewire component not yet created
+        // Route::get('/messages', App\Livewire\Messages::class)->name('messages');
 
         // Notifications (customer area)
         Route::get('/notifications', function () {
