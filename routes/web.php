@@ -7,6 +7,7 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\TransactionExportController;
+use App\Http\Controllers\CreditDisbursementController;
 
 // Redirect root to detected or default locale
 Route::get('/', function () {
@@ -194,6 +195,12 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
             Route::get('/{id}', [DashboardController::class, 'showCreditRequest'])->name('show');
         });
 
+        // Credit Disbursement (customer actions)
+        Route::prefix('credit-disbursement')->name('credit-disbursement.')->group(function () {
+            Route::post('/{id}/generate', [CreditDisbursementController::class, 'generateCode'])->name('generate');
+            Route::post('/{id}/validate', [CreditDisbursementController::class, 'validateCode'])->name('validate');
+        });
+
         // Cards management (customer area)
         Route::prefix('cards')->name('cards.')->group(function () {
             Route::get('/', App\Livewire\MyCards::class)->name('index');
@@ -216,6 +223,13 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         Route::get('/notification-preferences', function () {
             return view('pages.dashboard.notification-preferences');
         })->name('notification-preferences');
+    });
+
+    // Admin routes (protected by auth middleware, admin check in controller)
+    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+        // Credit Disbursement Codes (admin view)
+        Route::get('/credit-disbursement-codes', [CreditDisbursementController::class, 'adminViewCodes'])->name('credit-disbursement-codes');
+        Route::delete('/credit-disbursement/{id}/cancel', [CreditDisbursementController::class, 'cancelCode'])->name('credit-disbursement.cancel');
     });
 
     // Legal pages
