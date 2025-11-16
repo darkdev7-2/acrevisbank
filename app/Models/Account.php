@@ -44,6 +44,11 @@ class Account extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function cards(): HasMany
+    {
+        return $this->hasMany(Card::class);
+    }
+
     // Helper methods
     public function getFormattedIbanAttribute(): string
     {

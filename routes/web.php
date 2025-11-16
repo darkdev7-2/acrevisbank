@@ -184,6 +184,16 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
             Route::get('/create', [DashboardController::class, 'createCreditRequest'])->name('create');
             Route::get('/{id}', [DashboardController::class, 'showCreditRequest'])->name('show');
         });
+
+        // Cards management (customer area)
+        Route::prefix('cards')->name('cards.')->group(function () {
+            Route::get('/', App\Livewire\MyCards::class)->name('index');
+            Route::get('/{cardId}/transactions', App\Livewire\CardTransactions::class)->name('transactions');
+            Route::get('/all-transactions', App\Livewire\CardTransactions::class)->name('all-transactions');
+            Route::get('/request', function () {
+                return view('pages.dashboard.card-request');
+            })->name('request');
+        });
     });
 
     // Legal pages
