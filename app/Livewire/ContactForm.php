@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Illuminate\Support\Facades\DB;
+use App\Models\ContactFormSubmission;
 use Illuminate\Support\Facades\Mail;
 
 class ContactForm extends Component
@@ -31,7 +31,7 @@ class ContactForm extends Component
         $this->validate();
 
         // Store contact submission in database
-        DB::table('contact_submissions')->insert([
+        ContactFormSubmission::create([
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
@@ -39,9 +39,7 @@ class ContactForm extends Component
             'message' => $this->message,
             'preferred_contact_method' => $this->preferred_contact_method,
             'status' => 'new',
-            'submitted_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'ip_address' => request()->ip(),
         ]);
 
         // Optional: Send email notification
