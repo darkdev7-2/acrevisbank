@@ -153,6 +153,21 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'validated_by');
     }
 
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'recipient_id');
+    }
+
+    public function notificationPreference()
+    {
+        return $this->hasOne(NotificationPreference::class);
+    }
+
     // Filament panel access
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
