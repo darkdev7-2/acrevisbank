@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Laravel\Scout\Searchable;
 
 class Agency extends Model
 {
-    use HasTranslations;
+    use HasTranslations, Searchable;
     use LogsActivity;
 
     protected $fillable = [
@@ -40,6 +41,18 @@ class Agency extends Model
             'latitude' => 'decimal:7',
             'longitude' => 'decimal:7',
             'is_active' => 'boolean',
+        ];
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->getTranslations('name'),
+            'address' => $this->getTranslations('address'),
+            'description' => $this->getTranslations('description'),
+            'city' => $this->city,
+            'postal_code' => $this->postal_code,
         ];
     }
 

@@ -59,6 +59,10 @@ Route::prefix('{locale}')->middleware(SetLocale::class)->group(function () {
         return view('pages.home');
     })->name('home');
 
+    // Search
+    Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+    Route::get('/search/ajax', [App\Http\Controllers\SearchController::class, 'ajax'])->name('search.ajax');
+
     // Services
     Route::prefix('services')->name('services.')->group(function () {
         // Services index with dynamic filtering

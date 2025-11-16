@@ -40,6 +40,9 @@
     <!-- Cookie Consent -->
     @include('partials.cookie-consent')
 
+    <!-- Search Modal -->
+    @include('partials.search-modal')
+
     @livewireScripts
     @stack('scripts')
 </body>
