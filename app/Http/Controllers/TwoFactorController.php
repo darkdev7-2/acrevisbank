@@ -64,9 +64,13 @@ class TwoFactorController extends Controller
             $this->twoFactorService->markAsVerifiedForSession($user);
 
             // Redirect to intended page or dashboard
-            return redirect()->intended(
-                $user->hasRole('Admin') ? '/admin' : '/ebanking'
-            );
+            $locale = session('locale', config('app.locale', 'fr'));
+
+            if ($user->hasRole('Admin')) {
+                return redirect()->intended('/admin');
+            }
+
+            return redirect()->intended(route('dashboard.index', ['locale' => $locale]));
         }
 
         // Failed verification

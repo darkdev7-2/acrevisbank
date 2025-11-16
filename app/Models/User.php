@@ -171,8 +171,8 @@ class User extends Authenticatable
     // Filament panel access
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        // Allow access if user has 'access dashboard' permission
-        return $this->hasPermissionTo('access dashboard');
+        // Allow access if user has 'Admin' role
+        return $this->hasRole('Admin');
     }
 
     /**
