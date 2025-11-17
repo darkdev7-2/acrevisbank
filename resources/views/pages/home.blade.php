@@ -1149,21 +1149,25 @@
     </section>
 
     <!-- Meine Bank in der Nähe -->
+    @php
+        $agenciesData = [];
+        foreach($agencies as $city => $cityAgencies) {
+            $agenciesData[$city] = $cityAgencies->map(function($agency) use ($currentLocale) {
+                return [
+                    'name' => $agency->getTranslation('name', $currentLocale),
+                    'address' => $agency->getTranslation('address', $currentLocale),
+                    'city' => $agency->city,
+                    'postal_code' => $agency->postal_code,
+                    'phone' => $agency->phone,
+                    'email' => $agency->email,
+                ];
+            })->toArray();
+        }
+    @endphp
     <section class="py-16 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop');"
              x-data="{
                 selectedCity: '{{ $defaultCity }}',
-                agencies: {!! json_encode($agencies->map(function($cityAgencies) use ($currentLocale) {
-                    return $cityAgencies->map(function($agency) use ($currentLocale) {
-                        return [
-                            'name' => $agency->getTranslation('name', $currentLocale),
-                            'address' => $agency->getTranslation('address', $currentLocale),
-                            'city' => $agency->city,
-                            'postal_code' => $agency->postal_code,
-                            'phone' => $agency->phone,
-                            'email' => $agency->email,
-                        ];
-                    });
-                })) !!},
+                agencies: {!! json_encode($agenciesData) !!},
                 get currentAgency() {
                     return this.agencies[this.selectedCity]?.[0] || {
                         name: 'Acrevis Bank',
