@@ -120,7 +120,7 @@
                 @if($item['category'])
                 @php
                     $categoryServices = \App\Models\Service::where('category', $item['category'])
-                        ->where('is_active', true)
+                        ->where('is_published', true)
                         ->orderBy('order')
                         ->take(5)
                         ->get();

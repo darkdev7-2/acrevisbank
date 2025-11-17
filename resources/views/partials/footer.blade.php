@@ -106,11 +106,7 @@
                             {{ $currentLocale === 'fr' ? 'Prévoyance' : ($currentLocale === 'de' ? 'Vorsorge' : ($currentLocale === 'en' ? 'Pension' : 'Previsión')) }}
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('credit.request', ['locale' => $currentLocale]) }}" class="text-sm text-slate-400 hover:text-blue-400 transition-colors">
-                            {{ $currentLocale === 'fr' ? 'Demande de crédit' : ($currentLocale === 'de' ? 'Kreditantrag' : ($currentLocale === 'en' ? 'Credit request' : 'Solicitud de crédito')) }}
-                        </a>
-                    </li>
+                    
                 </ul>
             </div>
 
