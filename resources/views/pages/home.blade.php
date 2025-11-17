@@ -107,8 +107,8 @@
                 <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"></div>
                 <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
                     <div class="max-w-2xl text-white">
-                        <h1 class="text-5xl font-bold mb-6" x-text="slide.title{{ ucfirst($currentLocale) }}"></h1>
-                        <p class="text-xl mb-8" x-text="slide.desc{{ ucfirst($currentLocale) }}"></p>
+                        <h1 class="text-5xl font-bold mb-6" x-text="slide.title{{ \Illuminate\Support\Str::ucfirst($currentLocale) }}"></h1>
+                        <p class="text-xl mb-8" x-text="slide.desc{{ \Illuminate\Support\Str::ucfirst($currentLocale) }}"></p>
                         <a :href="slide.linkRoute" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg transition-colors shadow-lg">
                             @if($currentLocale === 'fr')
                                 En savoir plus
