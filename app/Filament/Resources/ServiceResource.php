@@ -96,7 +96,7 @@ class ServiceResource extends Resource
 
                 Forms\Components\Section::make('Paramètres')
                     ->schema([
-                        Forms\Components\Toggle::make('is_active')
+                        Forms\Components\Toggle::make('is_published')
                             ->label('Actif')
                             ->default(true),
 
@@ -133,7 +133,7 @@ class ServiceResource extends Resource
                     ->badge()
                     ->sortable(),
 
-                Tables\Columns\IconColumn::make('is_active')
+                Tables\Columns\IconColumn::make('is_published')
                     ->label('Actif')
                     ->boolean(),
 
@@ -149,7 +149,7 @@ class ServiceResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('category'),
                 Tables\Filters\SelectFilter::make('segment'),
-                Tables\Filters\TernaryFilter::make('is_active'),
+                Tables\Filters\TernaryFilter::make('is_published'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

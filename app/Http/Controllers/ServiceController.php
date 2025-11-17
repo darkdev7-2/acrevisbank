@@ -12,7 +12,7 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Service::where('is_active', true)
+        $query = Service::published()
             ->orderBy('order');
 
         // Filter by category if provided
@@ -28,7 +28,7 @@ class ServiceController extends Controller
         $services = $query->get();
 
         // Get all categories for filter
-        $categories = Service::where('is_active', true)
+        $categories = Service::published()
             ->select('category')
             ->distinct()
             ->pluck('category');
@@ -41,14 +41,14 @@ class ServiceController extends Controller
      */
     public function show(string $slug)
     {
-        $service = Service::where('slug', $slug)
-            ->where('is_active', true)
+        $service = Service::published()
+            ->where('slug', $slug)
             ->firstOrFail();
 
         // Get related services from the same category
-        $relatedServices = Service::where('category', $service->category)
+        $relatedServices = Service::published()
+            ->where('category', $service->category)
             ->where('slug', '!=', $slug)
-            ->where('is_active', true)
             ->orderBy('order')
             ->limit(3)
             ->get();

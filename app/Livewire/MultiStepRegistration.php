@@ -182,6 +182,8 @@ class MultiStepRegistration extends Component
             'id_document_expiry' => $this->id_document_expiry,
             'id_document_path' => $documentPath,
             'validation_status' => 'pending',
+            'is_active' => false, // Inactive until admin validates
+            'email_verified_at' => now(), // Pre-verified since they provided email
             'terms_accepted' => true,
             'terms_accepted_at' => now(),
             'marketing_consent' => $this->marketing_consent,

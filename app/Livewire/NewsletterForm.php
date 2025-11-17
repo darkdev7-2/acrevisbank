@@ -20,7 +20,7 @@ class NewsletterForm extends Component
         $this->validate();
 
         // Check if email already exists
-        $exists = DB::table('newsletter_subscribers')
+        $exists = DB::table('newsletter_subscriptions')
             ->where('email', $this->email)
             ->exists();
 
@@ -36,9 +36,12 @@ class NewsletterForm extends Component
             return;
         }
 
-        // Insert new subscriber
-        DB::table('newsletter_subscribers')->insert([
+        // Insert new subscriber with token for unsubscribe
+        DB::table('newsletter_subscriptions')->insert([
             'email' => $this->email,
+            'preferred_language' => app()->getLocale(),
+            'ip_address' => request()->ip(),
+            'token' => bin2hex(random_bytes(32)),
             'subscribed_at' => now(),
             'is_active' => true,
             'created_at' => now(),

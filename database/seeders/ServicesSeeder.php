@@ -1126,7 +1126,7 @@ class ServicesSeeder extends Seeder
                 'segment' => $serviceData['segment'],
                 'icon' => $serviceData['icon'],
                 'order' => $serviceData['order'],
-                'is_active' => true,
+                'is_published' => true,
                 'title' => $serviceData['title'],
                 'description' => $serviceData['description'],
                 'content' => $serviceData['content'],

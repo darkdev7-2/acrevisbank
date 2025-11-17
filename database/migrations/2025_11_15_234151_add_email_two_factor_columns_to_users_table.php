@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('two_factor_enabled')->default(false)->after('remember_token');
+            $table->string('two_factor_email_code', 6)->nullable()->after('two_factor_enabled');
+            $table->timestamp('two_factor_email_code_expires_at')->nullable()->after('two_factor_email_code');
+            $table->timestamp('two_factor_verified_at')->nullable()->after('two_factor_email_code_expires_at');
+            $table->integer('failed_two_factor_attempts')->default(0)->after('two_factor_verified_at');
+            $table->timestamp('two_factor_locked_until')->nullable()->after('failed_two_factor_attempts');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn([
+                'two_factor_enabled',
+                'two_factor_email_code',
+                'two_factor_email_code_expires_at',
+                'two_factor_verified_at',
+                'failed_two_factor_attempts',
+                'two_factor_locked_until',
+            ]);
+        });
+    }
+};

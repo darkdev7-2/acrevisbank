@@ -3,7 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Illuminate\Support\Facades\DB;
+use App\Models\ContactFormSubmission;
+use App\Mail\ContactFormSubmitted;
 use Illuminate\Support\Facades\Mail;
 
 class ContactForm extends Component
@@ -31,7 +32,7 @@ class ContactForm extends Component
         $this->validate();
 
         // Store contact submission in database
-        DB::table('contact_submissions')->insert([
+        $submission = ContactFormSubmission::create([
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
@@ -39,13 +40,17 @@ class ContactForm extends Component
             'message' => $this->message,
             'preferred_contact_method' => $this->preferred_contact_method,
             'status' => 'new',
-            'submitted_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'ip_address' => request()->ip(),
         ]);
 
-        // Optional: Send email notification
-        // Mail::to('admin@acrevis.ch')->send(new ContactFormSubmitted(...));
+        // Send email notification to admin
+        try {
+            $adminEmail = config('mail.admin_email', env('MAIL_ADMIN_EMAIL', 'admin@acrevis.ch'));
+            Mail::to($adminEmail)->send(new ContactFormSubmitted($submission));
+        } catch (\Exception $e) {
+            // Log but don't fail - email is not critical
+            \Log::warning('Failed to send contact form notification email: ' . $e->getMessage());
+        }
 
         $locale = app()->getLocale();
         $messages = [
